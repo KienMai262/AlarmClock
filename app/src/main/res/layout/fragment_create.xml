@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.create.CreateFragment"
+    android:background="@color/black">
+
+    <LinearLayout
+        android:id="@+id/topBarLayout"  android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_width="0dp"  android:layout_height="wrap_content"
+        android:paddingVertical="12dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <Button
+            android:id="@+id/btnCancel"  style="?android:attr/borderlessButtonStyle" android:text="Hủy"
+            android:textColor="#FFD700"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            tools:ignore="DuplicateSpeakableTextCheck" /> <TextView
+        android:text="Sửa Báo thức"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:layout_weight="2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/btnSave"  style="?android:attr/borderlessButtonStyle" android:text="Lưu"
+            android:textColor="#FFD700"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <TimePicker
+        android:id="@+id/timePicker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:timePickerMode="spinner"
+        android:layout_marginTop="75dp"
+        android:theme="@style/Theme.AppCompat"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/optionsScrollView" android:layout_width="0dp"  android:layout_height="0dp" android:layout_marginTop="16dp"
+        android:layout_marginBottom="@dimen/bottom_nav_height"
+        app:layout_constraintTop_toBottomOf="@id/timePicker"    app:layout_constraintBottom_toBottomOf="parent"      app:layout_constraintStart_toStartOf="parent"       app:layout_constraintEnd_toEndOf="parent"           android:fillViewport="true"> <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp" android:paddingBottom="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="50dp"
+            android:orientation="horizontal"
+            android:paddingHorizontal="10dp"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="8dp" android:background="@drawable/rounded_box">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lặp lại"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"/> <View
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="1dp" />
+
+            <TextView
+                android:id="@+id/btnRepeat"  android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical|end"
+                android:paddingHorizontal="8dp"
+                android:text="Ngày thường >"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground"/> </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="50dp"
+            android:orientation="horizontal"
+            android:paddingHorizontal="10dp"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/rounded_box">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nhạc chuông"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"/>
+
+            <View
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="1dp" />
+
+            <TextView
+                android:id="@+id/btnMusic"  android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical|end"
+                android:paddingHorizontal="8dp"
+                android:text="Mặc định >"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:clickable="true"      android:focusable="true"      android:background="?attr/selectableItemBackground"/> </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="50dp"
+            android:orientation="horizontal"
+            android:paddingHorizontal="10dp"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/rounded_box">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rung khi báo thức"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"/>
+
+            <View
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="1dp" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/knoll"  android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="50dp"
+            android:orientation="horizontal"
+            android:paddingHorizontal="10dp"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/rounded_box">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Xóa sau khi báo thức"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"/>
+
+            <View
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="1dp" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/deleteAfterAlarm"  android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="50dp"
+            android:orientation="horizontal"
+            android:paddingHorizontal="10dp"
+            android:gravity="center_vertical"
+            android:background="@drawable/rounded_box"> <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nhãn"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"/>
+
+            <View
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="1dp" />
+
+            <TextView
+                android:id="@+id/btnNote"  android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical|end"
+                android:paddingHorizontal="8dp"
+                android:text="Mặc định >"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:clickable="true"      android:focusable="true"      android:background="?attr/selectableItemBackground"/> </LinearLayout>
+
+    </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
