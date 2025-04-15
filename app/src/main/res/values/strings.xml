@@ -51,4 +51,15 @@
     <string name="note_display_default_with_arrow">Note ></string>
     <string name="select_days_prompt">Choose days ></string>
 
+    <string-array name="quiz_topics">
+        <item>Toán học</item>
+        <item>Lịch sử</item>
+        <item>Khoa học</item>
+    </string-array>
+
+    <string-array name="quiz_difficulties">
+        <item>Dễ</item>
+        <item>Trung bình</item>
+        <item>Khó</item>
+    </string-array>
 </resources>
