@@ -17,22 +17,25 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <Button
-            android:id="@+id/btnCancel"  style="?android:attr/borderlessButtonStyle" android:text="Hủy"
+            android:id="@+id/btnCancel"  style="?android:attr/borderlessButtonStyle"
+            android:text="Hủy"
             android:textColor="#FFD700"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            tools:ignore="DuplicateSpeakableTextCheck" /> <TextView
-        android:text="Sửa Báo thức"
-        android:textColor="#FFFFFF"
-        android:textSize="18sp"
-        android:gravity="center"
-        android:layout_weight="2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"/>
+            tools:ignore="DuplicateSpeakableTextCheck" />
+        <TextView
+            android:text="Sửa Báo thức"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:layout_weight="2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
 
         <Button
-            android:id="@+id/btnSave"  style="?android:attr/borderlessButtonStyle" android:text="Lưu"
+            android:id="@+id/btnSave"  style="?android:attr/borderlessButtonStyle"
+            android:text="Lưu"
             android:textColor="#FFD700"
             android:layout_weight="1"
             android:layout_width="0dp"
