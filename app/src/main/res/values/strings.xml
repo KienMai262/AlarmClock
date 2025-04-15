@@ -9,4 +9,46 @@
     <string name="alarms">Alarms</string>
     <string name="statistics">Statistics</string>
 
+    <string name="loop_option_one_time">One time</string>
+    <string name="loop_option_daily">Daily</string>
+    <string name="loop_option_monday_to_saturday">Monday to Saturday</string>
+    <string name="loop_option_custom">Custom</string>
+
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thursday">Thursday</string>
+    <string name="friday">Friday</string>
+    <string name="saturday">Saturday</string>
+    <string name="sunday">Sunday</string>
+
+
+    <string name="repair_alarm_text">Repair alarm</string>
+    <string name="loop">Loop</string>
+    <string name="music">Music</string>
+    <string name="vibration_when_alarm">Vibration when alarm</string>
+    <string name="delete_after_alarm">Delete after alarm</string>
+
+    <string name="note">Note</string>
+    <string name="note_default">Default</string>
+
+    <string name="choose_a_loop">Choose a loop</string>
+    <string name="choose_a_music">Choose a music</string>
+    <string name="choose_custom_date">Choose custom date</string>
+    <string name="enter_the_note">Enter the note</string>
+
+    <string name="save_successfully">Save successfully</string>
+
+    <string name="ok">OK</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+
+
+    <string name="repeat_days_format">%s ></string>
+    <string name="repeat_option_format">%s ></string>
+    <string name="music_display_format">%s ></string>
+    <string name="note_display_format">%s ></string>
+    <string name="note_display_default_with_arrow">Note ></string>
+    <string name="select_days_prompt">Choose days ></string>
+
 </resources>

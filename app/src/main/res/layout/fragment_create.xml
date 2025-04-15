@@ -18,14 +18,14 @@
 
         <Button
             android:id="@+id/btnCancel"  style="?android:attr/borderlessButtonStyle"
-            android:text="Hủy"
+            android:text="@string/cancel"
             android:textColor="#FFD700"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             tools:ignore="DuplicateSpeakableTextCheck" />
         <TextView
-            android:text="Sửa Báo thức"
+            android:text="@string/repair_alarm_text"
             android:textColor="#FFFFFF"
             android:textSize="18sp"
             android:gravity="center"
@@ -35,7 +35,7 @@
 
         <Button
             android:id="@+id/btnSave"  style="?android:attr/borderlessButtonStyle"
-            android:text="Lưu"
+            android:text="@string/save"
             android:textColor="#FFD700"
             android:layout_weight="1"
             android:layout_width="0dp"
@@ -73,7 +73,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Lặp lại"
+                android:text="@string/loop"
                 android:textColor="#FFFFFF"
                 android:textSize="18sp"/> <View
             android:layout_weight="1"
@@ -85,7 +85,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center_vertical|end"
                 android:paddingHorizontal="8dp"
-                android:text="Ngày thường >"
+                android:text="@string/loop_option_daily"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp" android:clickable="true"
                 android:focusable="true"
@@ -104,7 +104,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nhạc chuông"
+                android:text="@string/music"
                 android:textColor="#FFFFFF"
                 android:textSize="18sp"/>
 
@@ -118,7 +118,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center_vertical|end"
                 android:paddingHorizontal="8dp"
-                android:text="Mặc định >"
+                android:text="It's going to b..."
                 android:textColor="#FFFFFF"
                 android:textSize="16sp"
                 android:clickable="true"      android:focusable="true"      android:background="?attr/selectableItemBackground"/> </LinearLayout>
@@ -136,7 +136,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Rung khi báo thức"
+                android:text="@string/vibration_when_alarm"
                 android:textColor="#FFFFFF"
                 android:textSize="18sp"/>
 
@@ -163,7 +163,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Xóa sau khi báo thức"
+                android:text="@string/delete_after_alarm"
                 android:textColor="#FFFFFF"
                 android:textSize="18sp"/>
 
@@ -187,7 +187,7 @@
             android:background="@drawable/rounded_box"> <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Nhãn"
+            android:text="@string/note"
             android:textColor="#FFFFFF"
             android:textSize="18sp"/>
 
@@ -201,7 +201,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center_vertical|end"
                 android:paddingHorizontal="8dp"
-                android:text="Mặc định >"
+                android:text="@string/note_default"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp"
                 android:clickable="true"      android:focusable="true"      android:background="?attr/selectableItemBackground"/> </LinearLayout>

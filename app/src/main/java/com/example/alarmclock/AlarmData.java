@@ -11,20 +11,20 @@ public class AlarmData {
             new Pair<>("See you again meow", "@raw/see_you_again_meow"),
             new Pair<>("Squeaky computer chair", "@raw/squeaky_computer_chair")
     };
-    public Pair<String, Boolean>[] loopOption = new Pair[] {
-            new Pair<>("One time", false),
-            new Pair<>("Daily", false),
-            new Pair<>("Monday to Saturday", false),
-            new Pair<>("Custom", false)
+    public Pair<Integer, Boolean>[] loopOption = new Pair[] {
+            new Pair<>(R.string.loop_option_one_time, false),
+            new Pair<>(R.string.loop_option_daily, false),
+            new Pair<>(R.string.loop_option_monday_to_saturday, false),
+            new Pair<>(R.string.loop_option_custom, false)
     };
-    public Pair<String, Boolean>[] optionOther = new Pair[] {
-            new Pair<>("Monday", false),
-            new Pair<>("Tuesday", false),
-            new Pair<>("Wednesday", false),
-            new Pair<>("Thursday", false),
-            new Pair<>("Friday", false),
-            new Pair<>("Saturday", false),
-            new Pair<>("Sunday", false)
+    public Pair<Integer, Boolean>[] optionOther = new Pair[] {
+            new Pair<>(R.string.monday, false),
+            new Pair<>(R.string.tuesday, false),
+            new Pair<>(R.string.wednesday, false),
+            new Pair<>(R.string.thursday, false),
+            new Pair<>(R.string.friday, false),
+            new Pair<>(R.string.saturday, false),
+            new Pair<>(R.string.sunday, false)
     };
 
     public String timerString;

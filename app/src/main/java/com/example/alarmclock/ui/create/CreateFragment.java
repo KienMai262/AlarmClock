@@ -3,7 +3,9 @@ package com.example.alarmclock.ui.create;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,16 +49,19 @@ public class CreateFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentCreateBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+        Context context = requireContext();
 
         Button btnSave = binding.btnSave;
 
         btnSave.setOnClickListener(v -> {
             LocalTime timer = LocalTime.of(binding.timePicker.getHour(), binding.timePicker.getMinute());
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm a");
-            String timerString = timer.format(formatter);
+            DateTimeFormatter storageFormatter = DateTimeFormatter.ISO_LOCAL_TIME;
+//            DateTimeFormatter displayFormatter = DateTimeFormatter.ofPattern("hh:mm a");
+
+            String timerStringToStore = timer.format(storageFormatter);
 
             AlarmData newAlarm = new AlarmData("7:30:PM" , 0, false, false, null, -1);
-            newAlarm.timerString = timerString;
+            newAlarm.timerString = timerStringToStore;
             newAlarm.indexMusic = alarmData.indexMusic;
             newAlarm.knoll = alarmData.knoll;
             newAlarm.deleteAfterAlarm = alarmData.deleteAfterAlarm;
@@ -65,13 +70,13 @@ public class CreateFragment extends Fragment {
             newAlarm.optionOther = alarmData.optionOther;
             newAlarm.items = alarmData.items;
 
-            alarmDataList.add(newAlarm);
-            saveAlarmData(getContext());
+            CreateFragment.alarmDataList.add(newAlarm);
+            saveAlarmData(context, CreateFragment.alarmDataList);
 
             NavController navController = NavHostFragment.findNavController(this);
             navController.navigate(R.id.navigation_home);
 
-            Toast.makeText(getContext(), "Lưu thành công", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.save_successfully, Toast.LENGTH_SHORT).show();
         });
 
 
@@ -82,163 +87,246 @@ public class CreateFragment extends Fragment {
         });
 
 
-        // Lấy TextView từ ViewBinding
         TextView btnRepeat = binding.btnRepeat;
-
+        updateRepeatButtonText(context, btnRepeat, alarmData.loopIndex);
         btnRepeat.setOnClickListener(v -> {
-            String[] displayNames = new String[alarmData.loopOption.length];
+            if (alarmData.loopOption == null) return;
+
+            String[] loopOptionNames = new String[alarmData.loopOption.length];
             for (int i = 0; i < alarmData.loopOption.length; i++) {
-                displayNames[i] = alarmData.loopOption[i].first;
+                if (alarmData.loopOption[i] != null && alarmData.loopOption[i].first != null) {
+                    Object value = alarmData.loopOption[i].first;
+                    if (value instanceof Integer) {
+                        try {
+                            loopOptionNames[i] = context.getString((Integer) value);
+                        } catch (Resources.NotFoundException e) {
+                            loopOptionNames[i] = "ID:" + value;
+                        }
+                    } else {
+                        loopOptionNames[i] = value.toString();
+                    }
+                } else {
+                    loopOptionNames[i] = "";
+                }
             }
-            new AlertDialog.Builder(requireContext()) // Dùng requireContext() trong Fragment an toàn hơn
-                    .setTitle("Chọn kiểu lặp lại")
-                    .setItems(displayNames, (dialog, which) -> {
-                        if (which == 3) {
+
+            new AlertDialog.Builder(context)
+                    .setTitle(R.string.choose_a_loop)
+                    .setItems(loopOptionNames, (dialog, which) -> {
+                        if (which == 3) { // Index của "Tuỳ chỉnh"
                             showCustomDaysDialog(btnRepeat);
                         } else {
                             alarmData.loopIndex = which;
-                            String selectedText = alarmData.loopOption[which].first;
-                            btnRepeat.setText(selectedText + " >");
+                            updateRepeatButtonText(context, btnRepeat, which); // Cập nhật text nút
                         }
                     })
                     .show();
         });
 
         TextView btnMusic = binding.btnMusic;
+        updateMusicButtonText(context, btnMusic, alarmData.indexMusic);
+
         btnMusic.setOnClickListener(v -> {
+            if (alarmData.items == null) return;
 
             final String[] displayNames = new String[alarmData.items.length];
             for (int i = 0; i < alarmData.items.length; i++) {
-                displayNames[i] = alarmData.items[i].first;
+                displayNames[i] = (alarmData.items[i] != null && alarmData.items[i].first != null) ? alarmData.items[i].first.toString() : "";
             }
 
-            new AlertDialog.Builder(getContext())
-                    .setTitle("Chọn nhạc chuông")
+            new AlertDialog.Builder(context)
+                    .setTitle(R.string.choose_a_music)
                     .setItems(displayNames, (dialog, which) -> {
                         alarmData.indexMusic = which;
-                        String selectedDisplayName = alarmData.items[which].first;
-                        final int MAX_DISPLAY_LENGTH = 15;
-                        String displayText;
-                        if(selectedDisplayName.length() > MAX_DISPLAY_LENGTH) {
-                            displayText = selectedDisplayName.substring(0, MAX_DISPLAY_LENGTH) + "...";
-                        }
-                        else {
-                            displayText = selectedDisplayName;
-                        }
-                        btnMusic.setText(displayText + " >");
-
+                        updateMusicButtonText(context, btnMusic, which);
                     })
                     .show();
         });
 
 
         SwitchCompat btnKnoll = binding.knoll;
-        btnKnoll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                alarmData.knoll = isChecked;
-            }
-        });
+        btnKnoll.setChecked(alarmData.knoll);
+        btnKnoll.setOnCheckedChangeListener((buttonView, isChecked) -> alarmData.knoll = isChecked);
 
         SwitchCompat btnDeleteAfterAlarm = binding.deleteAfterAlarm;
-        btnDeleteAfterAlarm.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                alarmData.deleteAfterAlarm = isChecked;
-            }
-        });
-        TextView btnNote = binding.btnNote;
-        btnNote.setOnClickListener(v -> {
-            // Tạo EditText để nhập
-            final EditText input;
-            if(alarmData.note != null) {
-                input = new EditText(getContext());
-                input.setText(alarmData.note);
-            } else {
-                input = new EditText(getContext());
-            }
-            input.setHint("Nhập nhãn");
+        btnDeleteAfterAlarm.setChecked(alarmData.deleteAfterAlarm);
+        btnDeleteAfterAlarm.setOnCheckedChangeListener((buttonView, isChecked) -> alarmData.deleteAfterAlarm = isChecked);
 
-            // Tạo AlertDialog có EditText
-            new androidx.appcompat.app.AlertDialog.Builder(getContext())
-                    .setTitle("Tự nhập nhãn")
+        TextView btnNote = binding.btnNote;
+        updateNoteButtonText(context, btnNote, alarmData.note);
+
+        btnNote.setOnClickListener(v -> {
+            final EditText input = new EditText(context);
+            input.setText(alarmData.note != null ? alarmData.note : "");
+            input.setHint(R.string.enter_the_note);
+
+            new androidx.appcompat.app.AlertDialog.Builder(context)
+                    .setTitle(R.string.enter_the_note)
                     .setView(input)
-                    .setPositiveButton("OK", (dialog, which) -> {
+                    .setPositiveButton(R.string.ok, (dialog, which) -> {
                         String userInput = input.getText().toString().trim();
                         alarmData.note = userInput;
-                        if (!userInput.isEmpty()) {
-                            final int MAX_DISPLAY_LENGTH = 15;
-                            String displayText;
-
-                            if (userInput.length() > MAX_DISPLAY_LENGTH) {
-                                displayText = userInput.substring(0, MAX_DISPLAY_LENGTH) + "...";
-                            } else {
-                                displayText = userInput;
-                            }
-
-                            btnNote.setText(displayText + " >");
-
-                        } else {
-                            btnNote.setText("Mặc định >");
-                        }
+                        updateNoteButtonText(context, btnNote, userInput); // Cập nhật text nút
                     })
-                    .setNegativeButton("Hủy", null)
+                    .setNegativeButton(R.string.cancel, null)
                     .show();
         });
         return root;
     }
     private void showCustomDaysDialog(TextView btnRepeat) {
-        String[] dayNames = new String[alarmData.optionOther.length];
-        boolean[] checkedItems = new boolean[alarmData.optionOther.length];
+        Context context = requireContext();
+        if (alarmData.optionOther == null) return;
 
-        for (int i = 0; i < alarmData.optionOther.length; i++) {
-            dayNames[i] = alarmData.optionOther[i].first;
-            checkedItems[i] = alarmData.optionOther[i].second;
+        final int itemCount = alarmData.optionOther.length;
+
+        String[] dayNames = new String[itemCount];
+        boolean[] tempCheckedItems = new boolean[itemCount];
+
+        for (int i = 0; i < itemCount; i++) {
+            if (alarmData.optionOther[i] == null) {
+                dayNames[i] = "Error";
+                tempCheckedItems[i] = false;
+                continue;
+            }
+
+            Object dayValue = alarmData.optionOther[i].first;
+            Boolean isChecked = alarmData.optionOther[i].second;
+
+            if (dayValue instanceof Integer) {
+                try {
+                    dayNames[i] = context.getString((Integer) dayValue);
+                } catch (Resources.NotFoundException e) {
+                    dayNames[i] = "ID:" + dayValue; // Hiển thị ID nếu không tìm thấy string
+                }
+            } else if (dayValue != null) {
+                dayNames[i] = dayValue.toString(); // Nếu không phải Integer, thử toString
+            } else {
+                dayNames[i] = "Unknown Day";
+            }
+
+            tempCheckedItems[i] = (isChecked != null) ? isChecked : false;
         }
 
-        boolean[] tempCheckedItems = checkedItems.clone();
-        new AlertDialog.Builder(requireContext())
-                .setTitle("Chọn ngày tùy chỉnh")
-                .setMultiChoiceItems(dayNames, tempCheckedItems, (dialog, which, isChecked) -> {
-                    tempCheckedItems[which] = isChecked;
-                })
-                .setPositiveButton("Đồng ý", (dialog, id) -> {
-                    boolean hasSelection = false;
-                    List<String> selectedDaysShort = new ArrayList<>();
 
-                    for (int i = 0; i < alarmData.optionOther.length; i++) {
-                        alarmData.optionOther[i] = new Pair<>(alarmData.optionOther[i].first, tempCheckedItems[i]);
-                        if (tempCheckedItems[i]) {
-                            hasSelection = true;
-                            selectedDaysShort.add(alarmData.optionOther[i].first.substring(0, 2));
+        new AlertDialog.Builder(context)
+                .setTitle(R.string.choose_custom_date)
+                .setMultiChoiceItems(dayNames, tempCheckedItems, (dialog, which, isChecked) -> {
+                    if (which >= 0 && which < tempCheckedItems.length) {
+                        tempCheckedItems[which] = isChecked;
+                    }
+                })
+                .setPositiveButton(R.string.ok, (dialog, id) -> {
+                    for (int i = 0; i < itemCount; i++) {
+                        if (alarmData.optionOther[i] != null) {
+                            // Tạo Pair mới vì Pair có thể là immutable
+                            alarmData.optionOther[i] = new Pair<>(alarmData.optionOther[i].first, tempCheckedItems[i]);
                         }
                     }
-
                     alarmData.loopIndex = 3;
-
-                    if (hasSelection) {
-                        String customText = String.join(", ", selectedDaysShort); // Nối các ngày lại, ví dụ: "T2, T4, CN"
-                        btnRepeat.setText(customText + " >");
-                    } else {
-                        btnRepeat.setText(alarmData.loopOption[3].first + " >");
-                    }
-
+                    updateRepeatButtonText(context, btnRepeat, alarmData.loopIndex);
                 })
-                .setNegativeButton("Hủy", (dialog, id) -> {
+                .setNegativeButton(R.string.cancel, (dialog, id) -> {
                 })
                 .show();
     }
 
-    public void saveAlarmData(Context context) {
+    private void updateRepeatButtonText(Context context, TextView btnRepeat, int loopIndex) {
+        if (alarmData.loopOption == null || loopIndex < 0 ) return;
+
+        if (loopIndex == 3) {
+            boolean hasSelection = false;
+            List<String> selectedDaysShort = new ArrayList<>();
+            if (alarmData.optionOther != null) {
+                for (int i = 0; i < alarmData.optionOther.length; i++) {
+                    if (alarmData.optionOther[i] != null && alarmData.optionOther[i].second != null && alarmData.optionOther[i].second) {
+                        hasSelection = true;
+                        Object dayValue = alarmData.optionOther[i].first;
+                        String dayName = "";
+                        if (dayValue instanceof Integer) {
+                            try {
+                                dayName = context.getString((Integer) dayValue);
+                            } catch (Resources.NotFoundException e) { /* Xử lý lỗi */ }
+                        } else if (dayValue instanceof String) {
+                            dayName = (String) dayValue;
+                        }
+
+                        if (dayName.length() >= 2) {
+                            selectedDaysShort.add(dayName.substring(0, 2));
+                        } else {
+                            selectedDaysShort.add(dayName);
+                        }
+                    }
+                }
+            }
+
+            if (hasSelection) {
+                String customText = String.join(", ", selectedDaysShort);
+                btnRepeat.setText(context.getString(R.string.repeat_days_format, customText));
+            } else {
+                if (alarmData.loopOption.length > 3 && alarmData.loopOption[3] != null && alarmData.loopOption[3].first != null) {
+                    btnRepeat.setText(context.getString(R.string.repeat_option_format, alarmData.loopOption[3].first.toString()));
+                } else {
+                    btnRepeat.setText(R.string.select_days_prompt); // Hoặc giá trị mặc định an toàn
+                }
+            }
+        } else if (loopIndex < alarmData.loopOption.length && alarmData.loopOption[loopIndex] != null && alarmData.loopOption[loopIndex].first != null) {
+            Object value = alarmData.loopOption[loopIndex].first;
+            String optionName = "";
+
+            if (value instanceof Integer) {
+                try {
+                    optionName = context.getString((Integer) value);
+                }
+                catch (Resources.NotFoundException e) {
+                    optionName = "ID:" + value;
+                }
+            } else {
+                optionName = value.toString();
+            }
+            String textToSet = context.getString(R.string.repeat_option_format, optionName);
+            btnRepeat.setText(textToSet);
+        } else {
+            btnRepeat.setText(R.string.select_days_prompt);
+        }
+    }
+
+    private void updateMusicButtonText(Context context, TextView btnMusic, int musicIndex) {
+        if (alarmData.items == null || musicIndex < 0 || musicIndex >= alarmData.items.length || alarmData.items[musicIndex] == null || alarmData.items[musicIndex].first == null) {
+            return;
+        }
+        String selectedDisplayName = alarmData.items[musicIndex].first.toString();
+        final int MAX_DISPLAY_LENGTH = 15;
+        String displayText = selectedDisplayName;
+        if (selectedDisplayName.length() > MAX_DISPLAY_LENGTH) {
+            displayText = selectedDisplayName.substring(0, MAX_DISPLAY_LENGTH) + "...";
+        }
+        btnMusic.setText(context.getString(R.string.music_display_format, displayText));
+    }
+
+    private void updateNoteButtonText(Context context, TextView btnNote, String note) {
+        if (note != null && !note.isEmpty()) {
+            final int MAX_DISPLAY_LENGTH = 15;
+            String displayText = note;
+            if (note.length() > MAX_DISPLAY_LENGTH) {
+                displayText = note.substring(0, MAX_DISPLAY_LENGTH) + "...";
+            }
+            btnNote.setText(context.getString(R.string.note_display_format, displayText));
+        } else {
+            btnNote.setText(R.string.note_display_default_with_arrow);
+        }
+    }
+
+    public void saveAlarmData(Context context, List<AlarmData> listToSave) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String jsonString = gson.toJson(alarmDataList);
+        String jsonString = gson.toJson(listToSave);
         try {
             FileOutputStream fos = context.openFileOutput("alarm_data.json", Context.MODE_PRIVATE);
             OutputStreamWriter writer = new OutputStreamWriter(fos);
             writer.write(jsonString);
             writer.close();
+            Log.i("CreateFragment", "Alarm data saved successfully.");
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("CreateFragment", "Error saving alarm data", e);
         }
     }
 
@@ -258,3 +346,6 @@ public class CreateFragment extends Fragment {
 //String timeString = alarmData.timerString;
 //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm a");
 //LocalTime timer = LocalTime.parse(timeString, formatter);
+// String timerStringToDisplay = timer.format(displayFormatter);// Dùng khi cần hiển thị
+//Object value = alarmData.loopOption[loopIndex].first; // Lấy Integer ID
+//optionName = context.getString((Integer) value); // Lấy String từ ID ("One time")
