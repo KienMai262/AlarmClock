@@ -1,9 +1,7 @@
-package com.example.alarmclock;
+package com.example.alarmclock.alarm;
 
-import java.sql.Time;
-import java.time.LocalTime;
-import java.util.Date;
-import java.util.Timer;
+import com.example.alarmclock.Pair;
+import com.example.alarmclock.R;
 
 public class AlarmData {
     public Pair<String, String>[] items = new Pair[] {
@@ -32,7 +30,7 @@ public class AlarmData {
     public Boolean knoll = false;
     public Boolean deleteAfterAlarm = false;
     public String note;
-    public int loopIndex = -1;
+    public int loopIndex = 0;
 
     public AlarmData(String timerString,int indexMusic, Boolean knoll, Boolean deleteAfterAlarm, String note, int loopIndex) {
         this.timerString = timerString;

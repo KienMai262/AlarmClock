@@ -25,6 +25,7 @@ navigation-fragment = { group = "androidx.navigation", name = "navigation-fragme
 navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigationUi" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 

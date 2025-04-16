@@ -38,10 +38,13 @@
     <string name="enter_the_note">Enter the note</string>
 
     <string name="save_successfully">Save successfully</string>
+    <string name="delete_successfully">Delete successfully</string>
 
     <string name="ok">OK</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
+    <string name="error">Error</string>
 
 
     <string name="repeat_days_format">%s ></string>
