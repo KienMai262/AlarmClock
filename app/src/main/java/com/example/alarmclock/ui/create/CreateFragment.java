@@ -26,6 +26,7 @@ import com.example.alarmclock.alarm.AlarmData;
 import com.example.alarmclock.Pair;
 import com.example.alarmclock.R;
 // import com.example.alarmclock.alarm.AlarmStateManager; // Không cần thiết cho logic CREATE/EDIT nữa
+import com.example.alarmclock.alarm.AlarmSchedulerUtil;
 import com.example.alarmclock.databinding.FragmentCreateBinding;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -312,11 +313,13 @@ public class CreateFragment extends Fragment {
                 alarmDataList = new ArrayList<>();
             }
             alarmDataList.add(new Pair<>(currentEditingAlarmData, true));
+            AlarmSchedulerUtil.scheduleAlarm(getContext(), currentEditingAlarmData, alarmDataList.size() - 1);
             Log.i("CreateFragment", "New alarm added to list.");
 
         } else { // EDIT Mode
             // Kiểm tra index hợp lệ một lần nữa trước khi cập nhật
             if (alarmDataList != null && currentAlarmIndex >= 0 && currentAlarmIndex < alarmDataList.size()) {
+                AlarmSchedulerUtil.cancelAlarm(getContext(), currentAlarmIndex);
                 // Lấy Pair cũ để giữ nguyên trạng thái bật/tắt
                 Pair<AlarmData, Boolean> oldPair = alarmDataList.get(currentAlarmIndex);
                 boolean previousEnabledState = oldPair.second; // Lấy trạng thái cũ
@@ -326,6 +329,7 @@ public class CreateFragment extends Fragment {
 
                 // Thay thế item cũ bằng item mới trong danh sách
                 alarmDataList.set(currentAlarmIndex, updatedPair);
+                AlarmSchedulerUtil.scheduleAlarm(getContext(), currentEditingAlarmData, currentAlarmIndex);
                 Log.i("CreateFragment", "Alarm at index " + currentAlarmIndex + " updated.");
             } else {
                 Log.e("CreateFragment", "Invalid index (" + currentAlarmIndex + ") for saving EDIT. Aborting save.");
@@ -362,6 +366,8 @@ public class CreateFragment extends Fragment {
     public void DeleteAlarmHere(int index) {
         Context context = getContext();
         if (context == null) return;
+
+        AlarmSchedulerUtil.cancelAlarm(context, index);
 
         // --- Safety Check ---
         if (alarmDataList != null && index >= 0 && index < alarmDataList.size()) {
