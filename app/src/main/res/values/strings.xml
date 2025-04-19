@@ -7,7 +7,12 @@
     <string name="home">Home</string>
     <string name="settings">Settings</string>
     <string name="alarms">Alarms</string>
+    <string name="quizzes">Quizzes</string>
     <string name="statistics">Statistics</string>
+    <string name="description">Description</string>
+    <string name="language">Language</string>
+    <string name="about">About</string>
+    <string name="format">Format</string>
 
     <string name="loop_option_one_time">One time</string>
     <string name="loop_option_daily">Daily</string>
@@ -40,11 +45,14 @@
     <string name="save_successfully">Save successfully</string>
     <string name="delete_successfully">Delete successfully</string>
 
+    <string name="choose_a_language">Choose a language</string>"
+
     <string name="ok">OK</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
     <string name="delete">Delete</string>
     <string name="error">Error</string>
+    <string name="back">Back</string>
 
 
     <string name="repeat_days_format">%s ></string>
@@ -53,5 +61,33 @@
     <string name="note_display_format">%s ></string>
     <string name="note_display_default_with_arrow">Note ></string>
     <string name="select_days_prompt">Choose days ></string>
+
+    <string name="data">Data</string>
+    <string name="theme">Theme</string>
+
+    <string name="light">Light</string>
+    <string name="night">Night</string>
+
+    <string name="share_data">Share data</string>
+    <string name="share_your_data">Share your data</string>
+    <string name="reset_data">Reset data</string>
+    <string name="delete_all_data">Delete all data</string>
+    <string name="data_empty">Data empty</string>
+    <string name="share_subject">Share subject</string>
+    <string name="alarms_data">Alarms data</string>
+    <string name="share_via">Share via</string>
+    <string name="confirm_deletion_title">Confirm deletion</string>
+    <string name="confirm_deletion_message">Are you sure you want to delete all data?</string>
+    <string name="data_deleted_success">Data deleted successfully</string>
+    <string name="settings_deleted_file_not_found">Settings deleted, file not found</string>
+    <string name="error_deleting_data">Error deleting data</string>
+
+    <string name="csv">CSV</string>
+    <string name="copy_to_clipboard">Copy to clipboard</string>
+    <string name="alarm_data_conversion_error">Alarm data conversion error: %s</string>
+    <string name="data_copied_as_format">Data copied to clipboard as %1$s</string>
+    <string name="clipboard_error">Clipboard error</string>
+
+    <string name="share_data_with_others">Share data with others</string>
 
 </resources>

@@ -23,7 +23,7 @@
             android:textSize="24sp"
             android:textStyle="bold"
             tools:text="07:30"
-            android:textColor="@color/white"/>
+            android:textColor="?attr/android:textColorPrimary"/>
 
         <TextView
             android:id="@+id/textViewAlarmRepeat"
@@ -31,13 +31,13 @@
             android:layout_height="wrap_content"
             android:textSize="16sp"
             tools:text="@string/loop_option_daily"
-            android:textColor="@color/white"/>
+            android:textColor="?attr/android:textColorPrimary"/>
 
         <TextView
             android:id="@+id/textNote"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"/>
+            android:textColor="?attr/android:textColorPrimary"/>
     </LinearLayout>
 
 

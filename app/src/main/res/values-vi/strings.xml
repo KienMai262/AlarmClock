@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Đồng hồ báo thức</string>
+    <string name="title_home">Trang chủ</string>
+    <string name="title_dashboard">Bảng điều khiển</string>
+    <string name="title_notifications">Thông báo</string>
+    <string name="create_alarms">Tạo</string>
+    <string name="home">Trang chủ</string>
+    <string name="settings">Cài đặt</string>
+    <string name="alarms">Báo thức</string>
+    <string name="quizzes">Câu đố</string>
+    <string name="statistics">Thống kê</string>
+    <string name="description">Mô tả</string>
+    <string name="language">Ngôn ngữ</string>
+    <string name="about">Giới thiệu</string>
+    <string name="format">Định dạng</string>
+
+    <string name="loop_option_one_time">Một lần</string>
+    <string name="loop_option_daily">Hằng ngày</string>
+    <string name="loop_option_monday_to_saturday">Thứ hai đến thứ bảy</string>
+    <string name="loop_option_custom">Tùy chọn</string>
+
+    <string name="monday">Thứ hai</string>
+    <string name="tuesday">Thứ ba</string>
+    <string name="wednesday">Thứ tư</string>
+    <string name="thursday">Thứ năm</string>
+    <string name="friday">Thứ sáu</string>
+    <string name="saturday">Thứ bảy</string>
+    <string name="sunday">Chủ nhật</string>
+
+    <string name="repair_alarm_text">Sửa báo thức</string>
+    <string name="loop">Lặp lại</string>
+    <string name="music">Âm nhạc</string>
+    <string name="vibration_when_alarm">Rung khi báo thức</string>
+    <string name="delete_after_alarm">Xóa sau khi báo thức</string>
+
+    <string name="note">Ghi chú</string>
+    <string name="note_default">Mặc định</string>
+
+    <string name="choose_a_loop">Chọn chế độ lặp</string>
+    <string name="choose_a_music">Chọn nhạc</string>
+    <string name="choose_custom_date">Chọn ngày tùy chỉnh</string>
+    <string name="enter_the_note">Nhập ghi chú</string>
+
+    <string name="save_successfully">Lưu thành công</string>
+    <string name="delete_successfully">Xóa thành công</string>
+
+    <string name="choose_a_language">Chọn ngôn ngữ</string>
+
+    <string name="ok">OK</string>
+    <string name="save">Lưu</string>
+    <string name="cancel">Hủy</string>
+    <string name="delete">Xóa</string>
+    <string name="error">Lỗi</string>
+    <string name="back">Quay lại</string>
+
+    <string name="repeat_days_format">%s ></string>
+    <string name="repeat_option_format">%s ></string>
+    <string name="music_display_format">%s ></string>
+    <string name="note_display_format">%s ></string>
+    <string name="note_display_default_with_arrow">Ghi chú ></string>
+    <string name="select_days_prompt">Chọn ngày ></string>
+
+    <string name="data">Dữ liệu</string>
+    <string name="theme">Giao diện</string>
+
+    <string name="light">Sáng</string>
+    <string name="night">Tối</string>
+
+    <string name="share_data">Chia sẻ dữ liệu</string>
+    <string name="share_your_data">Chia sẻ dữ liệu của bạn</string>
+    <string name="reset_data">Đặt lại dữ liệu</string>
+    <string name="delete_all_data">Xóa tất cả dữ liệu</string>
+    <string name="data_empty">Dữ liệu trống</string>
+    <string name="share_subject">Chia sẻ chủ đề</string>
+    <string name="alarms_data">Dữ liệu cảnh báo</string>
+    <string name="share_via">Chia sẻ qua</string>
+    <string name="confirm_deletion_title">Xác nhận xóa</string>
+    <string name="confirm_deletion_message">Bạn có chắc chắn muốn xóa tất cả dữ liệu không?</string>
+    <string name="data_deleted_success">Dữ liệu đã được xóa thành công</string>
+    <string name="settings_deleted_file_not_found">Cài đặt đã xóa, không tìm thấy tệp</string>
+    <string name="error_deleting_data">Lỗi khi xóa dữ liệu</string>
+
+    <string name="csv">CSV</string>
+    <string name="copy_to_clipboard">Sao chép vào clipboard</string>
+    <string name="data_copied_as_format">Dữ liệu đã được sao chép vào clipboard dưới dạng %1$s</string>
+    <string name="alarm_data_conversion_error">Lỗi chuyển đổi dữ liệu cảnh báo: %s</string>
+    <string name="clipboard_error">Lỗi clipboard</string>
+
+    <string name="share_data_with_others">Chia sẻ dữ liệu với người khác</string>
+</resources>

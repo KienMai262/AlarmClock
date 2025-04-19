@@ -26,4 +26,24 @@
         android:id="@+id/navigation_notifications"
         android:name="com.example.alarmclock.ui.notifications.NotificationsFragment"
         tools:layout="@layout/fragment_notifications" />
+
+    <fragment
+        android:id="@+id/navigation_settings"
+        android:name="com.example.alarmclock.ui.setting.SettingFragment"
+        tools:layout="@layout/fragment_setting" />
+
+    <fragment
+        android:id="@+id/navigation_setting_alarm"
+        android:name="com.example.alarmclock.ui.setting.AlarmsSettingFragment"
+        tools:layout="@layout/fragment_setting_alarm" />
+
+    <fragment
+        android:id="@+id/navigation_setting_data"
+        android:name="com.example.alarmclock.ui.setting.SettingDataFragment"
+        tools:layout="@layout/fragment_setting_data" />
+
+    <fragment
+        android:id="@+id/navigation_share_data"
+        android:name="com.example.alarmclock.ui.share.DataShareFragment"
+        tools:layout="@layout/fragment_share_data" />
 </navigation>

@@ -4,7 +4,10 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -18,6 +21,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
@@ -28,14 +32,26 @@ import androidx.navigation.ui.NavigationUI;
 import com.example.alarmclock.databinding.ActivityMainBinding;
 
 import java.util.Calendar;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
+    private static final String PREFS_NAME = "Settings";
+    private static final String PREF_KEY_THEME = "AppTheme";
+    private static final String PREF_KEY_LANGUAGE = "AppLanguage";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+
+        int currentNightMode = prefs.getInt(PREF_KEY_THEME, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        AppCompatDelegate.setDefaultNightMode(currentNightMode);
+
+        String currentLanguageCode = prefs.getString(PREF_KEY_LANGUAGE, Locale.getDefault().getLanguage());
+        setLocale(this, currentLanguageCode);
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -44,6 +60,27 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(binding.navView, navController);
 
         checkAndRequestNotificationPermission();
+
+
+    }
+
+    public static void setLocale(Context context, String languageCode) {
+        if (languageCode == null || languageCode.isEmpty()) {
+            languageCode = Locale.getDefault().getLanguage();
+        }
+        Locale newLocale = new Locale(languageCode);
+        Locale.setDefault(newLocale);
+
+        Resources res = context.getResources();
+        Configuration config = new Configuration(res.getConfiguration());
+        config.setLocale(newLocale);
+
+        res.updateConfiguration(config, res.getDisplayMetrics());
+
+         Resources appRes = context.getApplicationContext().getResources();
+         Configuration appConfig = new Configuration(appRes.getConfiguration());
+         appConfig.setLocale(newLocale);
+         appRes.updateConfiguration(appConfig, appRes.getDisplayMetrics());
     }
 
     private static final int NOTIFICATION_PERMISSION_REQUEST_CODE = 101;

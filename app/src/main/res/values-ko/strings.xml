@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">알람시계</string> <!-- Đồng hồ báo thức -->
+    <string name="title_home">홈</string> <!-- Trang chủ -->
+    <string name="title_dashboard">대시보드</string> <!-- Bảng điều khiển -->
+    <string name="title_notifications">알림</string> <!-- Thông báo -->
+    <string name="create_alarms">생성</string> <!-- Tạo -->
+    <string name="home">홈</string> <!-- Trang chủ -->
+    <string name="settings">설정</string> <!-- Cài đặt -->
+    <string name="alarms">알람</string> <!-- Báo thức -->
+    <string name="quizzes">퀴즈</string> <!-- Câu đố -->
+    <string name="statistics">통계</string> <!-- Thống kê -->
+    <string name="description">설명</string> <!-- Mô tả -->
+    <string name="language">언어</string> <!-- Ngôn ngữ -->
+    <string name="about">정보</string> <!-- Giới thiệu -->
+    <string name="format">형식</string> <!-- Định dạng -->
+
+    <string name="loop_option_one_time">한 번</string> <!-- Một lần -->
+    <string name="loop_option_daily">매일</string> <!-- Hằng ngày -->
+    <string name="loop_option_monday_to_saturday">월요일부터 토요일까지</string> <!-- Thứ hai đến thứ bảy -->
+    <string name="loop_option_custom">사용자 지정</string> <!-- Tùy chọn -->
+
+    <string name="monday">월요일</string> <!-- Thứ hai -->
+    <string name="tuesday">화요일</string> <!-- Thứ ba -->
+    <string name="wednesday">수요일</string> <!-- Thứ tư -->
+    <string name="thursday">목요일</string> <!-- Thứ năm -->
+    <string name="friday">금요일</string> <!-- Thứ sáu -->
+    <string name="saturday">토요일</string> <!-- Thứ bảy -->
+    <string name="sunday">일요일</string> <!-- Chủ nhật -->
+
+    <string name="repair_alarm_text">알람 수정</string> <!-- Sửa báo thức -->
+    <string name="loop">반복</string> <!-- Lặp lại -->
+    <string name="music">음악</string> <!-- Âm nhạc -->
+    <string name="vibration_when_alarm">알람시 진동</string> <!-- Rung khi báo thức -->
+    <string name="delete_after_alarm">알람 후 삭제</string> <!-- Xóa sau khi báo thức -->
+
+    <string name="note">메모</string> <!-- Ghi chú -->
+    <string name="note_default">기본값</string> <!-- Mặc định -->
+
+    <string name="choose_a_loop">반복 선택</string> <!-- Chọn chế độ lặp -->
+    <string name="choose_a_music">음악 선택</string> <!-- Chọn nhạc -->
+    <string name="choose_custom_date">사용자 지정 날짜 선택</string> <!-- Chọn ngày tùy chỉnh -->
+    <string name="enter_the_note">메모 입력</string> <!-- Nhập ghi chú -->
+
+    <string name="save_successfully">성공적으로 저장됨</string> <!-- Lưu thành công -->
+    <string name="delete_successfully">성공적으로 삭제됨</string> <!-- Xóa thành công -->
+
+    <string name="choose_a_language">언어 선택</string> <!-- Chọn ngôn ngữ -->
+
+    <string name="ok">확인</string> <!-- OK -->
+    <string name="save">저장</string> <!-- Lưu -->
+    <string name="cancel">취소</string> <!-- Hủy -->
+    <string name="delete">삭제</string> <!-- Xóa -->
+    <string name="error">오류</string> <!-- Lỗi -->
+    <string name="back">뒤로</string> <!-- Quay lại -->
+
+    <string name="repeat_days_format">%s ></string>
+    <string name="repeat_option_format">%s ></string>
+    <string name="music_display_format">%s ></string>
+    <string name="note_display_format">%s ></string>
+    <string name="note_display_default_with_arrow">메모 ></string> <!-- Ghi chú > -->
+    <string name="select_days_prompt">요일 선택 ></string> <!-- Chọn ngày > -->
+
+    <string name="data">데이터</string> <!-- Dữ liệu -->
+    <string name="theme">테마</string> <!-- Giao diện -->
+
+    <string name="light">밝은</string> <!-- Sáng -->
+    <string name="night">어두운</string> <!-- Tối -->
+
+    <string name="share_data">데이터 공유</string> <!-- Chia sẻ dữ liệu -->
+    <string name="share_your_data">데이터를 공유하세요</string>
+    <string name="reset_data">데이터 초기화</string>
+    <string name="delete_all_data">모든 데이터 삭제</string>
+    <string name="data_empty">데이터가 비어 있습니다</string>
+    <string name="share_subject">주제 공유</string>
+    <string name="alarms_data">알람 데이터</string>
+    <string name="share_via">공유 방법</string>
+    <string name="confirm_deletion_title">삭제 확인</string>
+    <string name="confirm_deletion_message">모든 데이터를 삭제하시겠습니까?</string>
+    <string name="data_deleted_success">데이터가 성공적으로 삭제되었습니다</string>
+    <string name="settings_deleted_file_not_found">설정이 삭제되었으나 파일을 찾을 수 없습니다</string>
+    <string name="error_deleting_data">데이터 삭제 오류</string>
+
+    <string name="csv">CSV</string>
+    <string name="copy_to_clipboard">클립보드에 복사</string> <!-- Sao chép vào clipboard -->
+    <string name="data_copied_as_format">%1$s 형식으로 클립보드에 복사되었습니다</string>
+    <string name="alarm_data_conversion_error">알람 데이터 변환 오류: %s</string>
+    <string name="clipboard_error">클립보드 오류</string>
+
+    <string name="share_data_with_others">다른 사람과 데이터 공유</string> <!-- Chia sẻ dữ liệu với người khác -->
+</resources>

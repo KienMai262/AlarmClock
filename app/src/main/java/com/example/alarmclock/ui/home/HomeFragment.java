@@ -7,6 +7,7 @@
     import android.view.LayoutInflater;
     import android.view.View;
     import android.view.ViewGroup;
+    import android.widget.ImageButton;
     import android.widget.LinearLayout;
     import android.widget.Toast;
 
@@ -189,11 +190,19 @@
                 layoutAlarmList.setVisibility(View.GONE); // Ẩn list view
                 Log.i("HomeFragment", "No alarms found in the list.");
             }
+
+
+            ImageButton btnSetting = view.findViewById(R.id.btnSetting);
+            btnSetting.setOnClickListener(v->{
+                NavController navController = NavHostFragment.findNavController(this);
+                navController.navigate(R.id.navigation_settings);
+            });
             return view;
         }
 
         // Hàm lấy tên tùy chọn lặp lại (tương tự logic trong CreateFragment)
         private String getRepeatOptionName(Context context, AlarmData data) {
+            Log.d("HomeFragment", "getRepeatOptionName called with data: " + context.getString(R.string.loop_option_daily));
             if (data == null) return context.getString(R.string.loop_option_daily); // Mặc định
 
             int loopIndex = data.loopIndex;
@@ -228,7 +237,11 @@
                 }
             } else if (data.loopOption != null && loopIndex >= 0 && loopIndex < data.loopOption.length && data.loopOption[loopIndex] != null && data.loopOption[loopIndex].first != null) {
                 Object value = data.loopOption[loopIndex].first;
-                if (value instanceof Integer) { try { return context.getString((Integer) value); } catch (Exception e) { return "ID:" + value; } }
+                Log.d("HomeFragment", "Value: " + value);
+                if (value instanceof Integer) { try {
+                    //TODO: fix this
+                    Log.d("HomeFragment", "Integer value: " + context.getString((Integer) value));
+                return context.getString((Integer) value); } catch (Exception e) { return "ID:" + value; } }
                 else { return value.toString(); }
             }
 

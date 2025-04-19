@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:gravity="center"
     android:padding="24dp"
-    android:background="#000000">
+    android:background="?attr/colorOnPrimary">
 
     <TextView
         android:id="@+id/alarmLabel"

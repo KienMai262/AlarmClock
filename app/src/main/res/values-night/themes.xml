@@ -1,22 +1,26 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
     <style name="Theme.AlarmClock" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Ẩn ActionBar -->
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
 
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">#000000</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
-        <item name="colorOnPrimary">@color/black</item>
 
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_200</item>
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorPrimary">#FFFFFF</item>
+        <item name="colorPrimaryVariant">#C8FF4C</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">#FC253A</item>
+        <item name="colorSecondaryVariant">#FC253A</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorSurface">#040404</item>
+        <item name="colorOnSurface">#9F9F9F</item>
+        <item name="android:statusBarColor">#3B2600</item>
 
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <item name="android:windowBackground">#170600</item>
+
+        <item name="android:textColorPrimary">#9F9F9F</item>
+        <item name="android:textColorTertiary">#A2C143</item>
+
+        <item name="android:numbersTextColor">#A2C143</item>
+
     </style>
 
 </resources>

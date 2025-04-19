@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-    <solid android:color="#1F1F1F"/> <!-- hoặc màu nền của khối -->
+    <solid android:color= "?attr/android:statusBarColor" /> <!-- hoặc màu nền của khối -->
     <corners android:radius="25dp" /> <!-- bo góc 12dp -->
 </shape>

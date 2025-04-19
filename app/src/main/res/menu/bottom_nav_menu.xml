@@ -3,18 +3,18 @@
 
     <item
         android:id="@+id/navigation_home"
-        android:icon="@drawable/ic_home_black_24dp"
-        android:title="@string/title_home" />
+        android:icon="@drawable/baseline_access_alarms_24"
+        android:title="" />
 
     <item
         android:id="@+id/navigation_create"
         android:icon="@drawable/baseline_add_circle_outline_24"
-        android:title="@string/create_alarms" />
+        android:title="" />
 
     <item
         android:id="@+id/navigation_notifications"
         android:icon="@drawable/baseline_bar_chart_24"
-        android:title="@string/title_notifications" />
+        android:title="" />
 
 
 </menu>

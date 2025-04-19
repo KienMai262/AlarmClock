@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.create.CreateFragment"
-    android:background="@color/black">
+    tools:context=".ui.create.CreateFragment">
 
     <LinearLayout
         android:id="@+id/topBarLayout"  android:orientation="horizontal"
@@ -19,25 +18,28 @@
         <Button
             android:id="@+id/btnCancel"  style="?android:attr/borderlessButtonStyle"
             android:text="@string/cancel"
-            android:textColor="#FFD700"
+            android:textColor="?attr/android:textColorTertiary"
             android:layout_weight="1"
             android:layout_width="0dp"
+            android:textStyle="bold"
             android:layout_height="wrap_content"
             tools:ignore="DuplicateSpeakableTextCheck" />
         <TextView
             android:text="@string/repair_alarm_text"
-            android:textColor="#FFFFFF"
+            android:textColor="?attr/android:textColorTertiary"
             android:textSize="18sp"
             android:gravity="center"
             android:layout_weight="2"
+            android:textStyle="bold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"/>
 
         <Button
             android:id="@+id/btnSave"  style="?android:attr/borderlessButtonStyle"
             android:text="@string/save"
-            android:textColor="#FFD700"
+            android:textColor="?attr/android:textColorTertiary"
             android:layout_weight="1"
+            android:textStyle="bold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"/>
     </LinearLayout>
@@ -48,7 +50,7 @@
         android:layout_height="wrap_content"
         android:timePickerMode="spinner"
         android:layout_marginTop="75dp"
-        android:theme="@style/Theme.AppCompat"
+        android:numbersTextColor="?attr/itemTextColor"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
@@ -74,8 +76,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/loop"
-                android:textColor="#FFFFFF"
-                android:textSize="18sp"/> <View
+                android:textSize="18sp"
+                android:textColor="?attr/android:textColorPrimary"
+                android:textStyle="bold" />
+
+            <View
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="1dp" />
@@ -86,7 +91,7 @@
                 android:gravity="center_vertical|end"
                 android:paddingHorizontal="8dp"
                 android:text="@string/loop_option_daily"
-                android:textColor="#FFFFFF"
+                android:textColor="?attr/android:textColorPrimary"
                 android:textSize="16sp" android:clickable="true"
                 android:focusable="true"
                 android:background="?attr/selectableItemBackground"/> </LinearLayout>
@@ -105,7 +110,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/music"
-                android:textColor="#FFFFFF"
+                android:textColor="?attr/android:textColorPrimary"
+                android:textStyle="bold"
                 android:textSize="18sp"/>
 
             <View
@@ -119,7 +125,7 @@
                 android:gravity="center_vertical|end"
                 android:paddingHorizontal="8dp"
                 android:text="It's going to b..."
-                android:textColor="#FFFFFF"
+                android:textColor="?attr/android:textColorPrimary"
                 android:textSize="16sp"
                 android:clickable="true"      android:focusable="true"      android:background="?attr/selectableItemBackground"/> </LinearLayout>
 
@@ -137,7 +143,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/vibration_when_alarm"
-                android:textColor="#FFFFFF"
+                android:textColor="?attr/android:textColorPrimary"
+                android:textStyle="bold"
                 android:textSize="18sp"/>
 
             <View
@@ -164,7 +171,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/delete_after_alarm"
-                android:textColor="#FFFFFF"
+                android:textColor="?attr/android:textColorPrimary"
+                android:textStyle="bold"
                 android:textSize="18sp"/>
 
             <View
@@ -191,7 +199,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/note"
-                android:textColor="#FFFFFF"
+                android:textColor="?attr/android:textColorPrimary"
+                android:textStyle="bold"
                 android:textSize="18sp"/>
 
             <View
@@ -205,7 +214,7 @@
                 android:gravity="center_vertical|end"
                 android:paddingHorizontal="8dp"
                 android:text="@string/note_default"
-                android:textColor="#FFFFFF"
+                android:textColor="?attr/android:textColorPrimary"
                 android:textSize="16sp"
                 android:clickable="true"      android:focusable="true"      android:background="?attr/selectableItemBackground"/>
         </LinearLayout>
@@ -230,7 +239,7 @@
                 android:text="@string/delete"
                 android:textStyle="bold"
                 android:textSize="20sp"
-                android:textColor="#FFD700" />
+                android:textColor="?attr/android:textColorTertiary" />
         </LinearLayout>
 
     </LinearLayout>
