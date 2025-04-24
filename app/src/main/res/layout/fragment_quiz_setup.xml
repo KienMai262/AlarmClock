@@ -27,7 +27,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/label_subject" />
+            android:text="Subject" />
         <Spinner
             android:id="@+id/spinner_subject"
             android:layout_width="match_parent"
@@ -37,7 +37,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/label_topic"
+            android:text="Topic"
             android:layout_marginTop="8dp" />
         <Spinner
             android:id="@+id/spinner_topic"
@@ -48,7 +48,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/label_difficulty"
+            android:text="Difficulty"
             android:layout_marginTop="8dp" />
         <Spinner
             android:id="@+id/spinner_difficulty"
@@ -59,7 +59,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/label_number_of_questions"
+            android:text="Number of Questions"
             android:layout_marginTop="8dp" />
         <EditText
             android:id="@+id/edit_text_number_questions"
@@ -72,7 +72,7 @@
             android:id="@+id/btn_confirm_quiz_setup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/confirm_button"
+            android:text="Confirm"
             android:layout_marginTop="16dp" />
     </LinearLayout>
 </ScrollView>

@@ -52,16 +52,13 @@ public class QuizSetupFragment extends Fragment {
         spinnerDifficulty = view.findViewById(R.id.spinner_difficulty);
         editTextNumQuestions = view.findViewById(R.id.edit_text_number_questions);
         btnConfirm = view.findViewById(R.id.btn_confirm_quiz_setup);
-        Button btnBack = view.findViewById(R.id.btn_back);
+
+
+
 
         setupTopicMap(); // Đưa dữ liệu vào topicMap dựa trên ngôn ngữ
         setupSubjectSpinner();
         setupDifficultySpinner();
-
-        btnBack.setOnClickListener(v -> {
-            NavController navController = NavHostFragment.findNavController(this);
-            navController.popBackStack();  // Quay lại màn hình trước
-        });
 
         btnConfirm.setOnClickListener(v -> {
             String subject = spinnerSubject.getSelectedItem().toString();
@@ -93,7 +90,9 @@ public class QuizSetupFragment extends Fragment {
             // Quay về fragment trước (CreateAlarmFragment)
             NavController navController = NavHostFragment.findNavController(this);
             navController.popBackStack();  // Quay lại màn trước
+
         });
+
         return view;
     }
     //bổ sung setupTopicmap
@@ -154,5 +153,6 @@ public class QuizSetupFragment extends Fragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerDifficulty.setAdapter(adapter);
     }
+
 }
 
