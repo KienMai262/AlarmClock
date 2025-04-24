@@ -9,7 +9,20 @@ public class Question implements Serializable {
     public String difficulty;
 
     public String content;
-    public List<String> options;
+    public List<String> answers;
+
+    public Question(String subject, String topic, String difficulty, String content, List<String> answers, String trueAnswer) {
+        this.subject = subject;
+        this.topic = topic;
+        this.difficulty = difficulty;
+        this.content = content;
+        this.answers = answers;
+        this.trueAnswer = trueAnswer;
+    }
+
+    public Question(String subject) {
+        this.subject = subject;
+    }
 
     public String trueAnswer;
 
@@ -45,12 +58,12 @@ public class Question implements Serializable {
         this.content = content;
     }
 
-    public List<String> getOptions() {
-        return options;
+    public List<String> getAnswers() {
+        return answers;
     }
 
-    public void setOptions(List<String> options) {
-        this.options = options;
+    public void setAnswers(List<String> answers) {
+        this.answers = answers;
     }
 
     public String getTrueAnswer() {
