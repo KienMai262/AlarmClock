@@ -13,8 +13,11 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.alarmclock.Pair;
 import com.example.alarmclock.R; // Đảm bảo R được import
 import com.example.alarmclock.ui.quiz.QuizActivity;
+
+import java.util.List;
 
 public class AlarmRingActivity extends AppCompatActivity {
     private static final String TAG = "AlarmRingActivity";
@@ -29,8 +32,8 @@ public class AlarmRingActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             setShowWhenLocked(true);
             setTurnScreenOn(true);
-             KeyguardManager keyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
-             if(keyguardManager!= null) keyguardManager.requestDismissKeyguard(this, null); // Cân nhắc nếu muốn tự bỏ qua màn hình khóa
+            KeyguardManager keyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
+            if(keyguardManager!= null) keyguardManager.requestDismissKeyguard(this, null); // Cân nhắc nếu muốn tự bỏ qua màn hình khóa
         } else {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
                     WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON |
@@ -44,16 +47,47 @@ public class AlarmRingActivity extends AppCompatActivity {
         Intent intent = getIntent();
         currentAlarmId = intent.getIntExtra("alarmId", -1);
         String alarmNote = intent.getStringExtra("alarmNote");
+        String subject = null;
+        String topic = null;
+        String difficulty = null;
+        int numQuestions = 5; // Giá trị mặc định
+
+        if (currentAlarmId != -1) {
+            List<Pair<AlarmData, Boolean>> alarms = AlarmStorageUtil.loadAlarmsFromFile(this);
+            if (alarms != null && currentAlarmId >= 0 && currentAlarmId < alarms.size()) {
+                Pair<AlarmData, Boolean> currentAlarmPair = alarms.get(currentAlarmId);
+                if (currentAlarmPair != null && currentAlarmPair.first != null) {
+                    AlarmData alarmData = currentAlarmPair.first;
+                    subject = alarmData.subject;
+                    topic = alarmData.topic;
+                    difficulty = alarmData.difficulty;
+                    // Lấy numQuestions, kiểm tra xem có giá trị hợp lệ không
+                    if (alarmData.numQuestions > 0) {
+                        numQuestions = alarmData.numQuestions;
+                    }
+                    Log.d(TAG, "Loaded from Storage - Subject: " + subject);
+                    Log.d(TAG, "Loaded from Storage - Topic: " + topic);
+                    Log.d(TAG, "Loaded from Storage - Difficulty: " + difficulty);
+                    Log.d(TAG, "Loaded from Storage - NumQuestions: " + numQuestions);
+                } else {
+                    Log.e(TAG, "Alarm data pair or AlarmData is null for id: " + currentAlarmId);
+                }
+            } else {
+                Log.e(TAG, "Could not load alarms or invalid alarmId: " + currentAlarmId);
+            }
+        } else {
+            Log.e(TAG, "Received invalid alarmId: -1");
+        }
         if (alarmNote == null || alarmNote.isEmpty()) {
             alarmNote = "Báo thức!"; // Ghi chú mặc định
         }
-        String subject = intent.getStringExtra("subject");
-        String topic = intent.getStringExtra("topic");
-        String difficulty = intent.getStringExtra("difficulty");
-        int numQuestions = intent.getIntExtra("numQuestions", 5); // Số câu hỏi mặc định là 5
 
-        Log.d(TAG,"Displaying UI for alarmId: " + currentAlarmId);
-        Log.d(TAG,"Alarm note: " + alarmNote);
+        Log.d(TAG, "Retrieved - alarmId: " + currentAlarmId);
+        Log.d(TAG, "Retrieved - alarmNote: " + alarmNote);
+        Log.d(TAG, "Retrieved - subject: " + subject); // QUAN TRỌNG
+        Log.d(TAG, "Retrieved - topic: " + topic);     // QUAN TRỌNG
+        Log.d(TAG, "Retrieved - difficulty: " + difficulty); // QUAN TRỌNG
+        Log.d(TAG, "Retrieved - numQuestions: " + numQuestions); // QUAN TRỌNG
 
         TextView noteTextView = findViewById(R.id.alarmLabel);
         Button doQuizButton = findViewById(R.id.doQuizButton);
@@ -66,17 +100,23 @@ public class AlarmRingActivity extends AppCompatActivity {
 
         // logic để hiển thị sang màn hình quiz
         if (doQuizButton != null) {
+            final String finalSubject = subject;
+            final String finalTopic = topic;
+            final String finalDifficulty = difficulty;
+            final int finalNumQuestions = numQuestions;
+
             doQuizButton.setOnClickListener(v -> {
                 stopAlarmService();
 
-                Log.d(TAG, "numsQuestions: " + numQuestions);
+                Log.d(TAG, "Starting Quiz - numsQuestions: " + finalNumQuestions);
+                Log.d(TAG, "Starting Quiz - subject: " + finalSubject); // Log này bây giờ nên đúng
 
                 Intent quizIntent = new Intent(AlarmRingActivity.this, QuizActivity.class);
                 quizIntent.putExtra("alarmId", currentAlarmId);
-                quizIntent.putExtra("subject", subject);
-                quizIntent.putExtra("topic", topic);
-                quizIntent.putExtra("difficulty", difficulty);
-                quizIntent.putExtra("numQuestions", numQuestions);
+                quizIntent.putExtra("subject", finalSubject); // Truyền dữ liệu đã lấy từ storage
+                quizIntent.putExtra("topic", finalTopic);
+                quizIntent.putExtra("difficulty", finalDifficulty);
+                quizIntent.putExtra("numQuestions", finalNumQuestions);
                 startActivity(quizIntent);
                 finish(); // đóng Alarm UI
             });
@@ -105,7 +145,7 @@ public class AlarmRingActivity extends AppCompatActivity {
     // Ngăn chặn việc đóng Activity bằng nút Back mà không dừng Service
     @Override
     public void onBackPressed() {
-         super.onBackPressed(); // Không gọi super để ngăn chặn Back
+        super.onBackPressed(); // Không gọi super để ngăn chặn Back
         Log.d(TAG, "Back button pressed. Use Stop button.");
         // Thêm chuỗi use_stop_button_to_dismiss vào strings.xml
         android.widget.Toast.makeText(this, "Nhấn nút Stop để tắt báo thức", android.widget.Toast.LENGTH_SHORT).show();

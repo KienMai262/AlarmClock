@@ -150,6 +150,7 @@ public class AlarmSchedulerUtil {
         intent.putExtra("topic", alarm.topic);
         intent.putExtra("difficulty", alarm.difficulty);
         intent.putExtra("numQuestions", alarm.numQuestions);
+        Log.d("Subject: ", alarm.subject);
 
         // Chỉ thêm customDays nếu là kiểu tùy chỉnh
         if (alarm.loopIndex == 3) {
@@ -170,6 +171,8 @@ public class AlarmSchedulerUtil {
                 intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
+
+        Log.d("intent", String.valueOf(intent));
 
         // --- 6. Lên lịch báo thức ---
         try {

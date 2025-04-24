@@ -75,6 +75,7 @@ public class AlarmRingService extends Service {
         }
 
         // Lấy dữ liệu từ Intent được gửi bởi AlarmReceiver
+        Log.d("hehehehe", intent.getIntExtra("alarmId", -1) + intent.getStringExtra("subject"));
         currentAlarmId = intent.getIntExtra("alarmId", -1);
         int soundResourceId = intent.getIntExtra("soundResourceId", -1);
         String alarmNote = intent.getStringExtra("alarmNote");
@@ -130,7 +131,7 @@ public class AlarmRingService extends Service {
         ringActivityIntent.putExtra("difficulty", difficulty);
         ringActivityIntent.putExtra("numQuestions", numQuestions);
 
-
+        Log.d(TAG, ringActivityIntent.getStringExtra("subject"));
 
         // START_STICKY: Nếu service bị kill, hệ thống sẽ cố gắng khởi động lại nhưng intent sẽ là null
         // START_NOT_STICKY: Nếu service bị kill, nó sẽ không tự khởi động lại trừ khi có intent mới
