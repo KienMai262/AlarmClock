@@ -54,6 +54,28 @@
     <string name="error">오류</string> <!-- Lỗi -->
     <string name="back">뒤로</string> <!-- Quay lại -->
 
+    <!--Thêm cho phần quiz setup-->
+    <string name="label_subject">과목</string>
+    <string name="label_topic">주제</string>
+    <string name="label_difficulty">난이도</string>
+    <string name="label_number_of_questions">문제 수</string>
+    <string name="confirm_button">확인</string>
+    <string name="error_empty_questions">문제 수를 입력해주세요</string>
+
+    <string name="subject_english">영어</string>
+    <string name="subject_math">수학</string>
+    <string name="topic_vocabulary">어휘</string>
+    <string name="topic_grammar">문법</string>
+    <string name="topic_reading">독해</string>
+    <string name="topic_algebra">대수</string>
+    <string name="topic_geometry">기하학</string>
+    <string name="topic_calculus">미적분</string>
+
+    <string name="difficulty_easy">쉬움</string>
+    <string name="difficulty_medium">보통</string>
+    <string name="difficulty_hard">어려움</string>
+    <string name="difficulty_nightmare">매우 어려움</string>
+
     <string name="repeat_days_format">%s ></string>
     <string name="repeat_option_format">%s ></string>
     <string name="music_display_format">%s ></string>

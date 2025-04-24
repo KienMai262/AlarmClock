@@ -54,6 +54,29 @@
     <string name="error">Error</string>
     <string name="back">Back</string>
 
+    <!--thêm cho phần quiz setup -->
+
+    <string name="label_subject">Subject</string>
+    <string name="label_topic">Topic</string>
+    <string name="label_difficulty">Difficulty</string>
+    <string name="label_number_of_questions">Number of Questions</string>
+    <string name="confirm_button">Confirm</string>
+    <string name="error_empty_questions">Please enter number of questions</string>
+
+    <string name="subject_english">English</string>
+    <string name="subject_math">Math</string>
+    <string name="topic_vocabulary">Vocabulary</string>
+    <string name="topic_grammar">Grammar</string>
+    <string name="topic_reading">Reading</string>
+    <string name="topic_algebra">Algebra</string>
+    <string name="topic_geometry">Geometry</string>
+    <string name="topic_calculus">Calculus</string>
+
+    <string name="difficulty_easy">Easy</string>
+    <string name="difficulty_medium">Medium</string>
+    <string name="difficulty_hard">Hard</string>
+    <string name="difficulty_nightmare">Nightmare</string>
+
 
     <string name="repeat_days_format">%s ></string>
     <string name="repeat_option_format">%s ></string>

@@ -54,6 +54,28 @@
     <string name="error">Lỗi</string>
     <string name="back">Quay lại</string>
 
+    <!--Thêm cho phần quiz setup-->
+    <string name="label_subject">Môn học</string>
+    <string name="label_topic">Chủ đề</string>
+    <string name="label_difficulty">Độ khó</string>
+    <string name="label_number_of_questions">Số câu hỏi</string>
+    <string name="confirm_button">Xác nhận</string>
+    <string name="error_empty_questions">Vui lòng nhập số câu hỏi</string>
+
+    <string name="subject_english">Tiếng Anh</string>
+    <string name="subject_math">Toán</string>
+    <string name="topic_vocabulary">Từ vựng</string>
+    <string name="topic_grammar">Ngữ pháp</string>
+    <string name="topic_reading">Đọc hiểu</string>
+    <string name="topic_algebra">Đại số</string>
+    <string name="topic_geometry">Hình học</string>
+    <string name="topic_calculus">Giải tích</string>
+
+    <string name="difficulty_easy">Dễ</string>
+    <string name="difficulty_medium">Trung bình</string>
+    <string name="difficulty_hard">Khó</string>
+    <string name="difficulty_nightmare">Cực khó</string>
+
     <string name="repeat_days_format">%s ></string>
     <string name="repeat_option_format">%s ></string>
     <string name="music_display_format">%s ></string>

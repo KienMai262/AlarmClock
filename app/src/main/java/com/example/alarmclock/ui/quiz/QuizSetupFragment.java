@@ -26,10 +26,11 @@ import java.util.Map;
 
 public class QuizSetupFragment extends Fragment {
 
-    private final Map<String, List<String>> topicMap = new HashMap<String, List<String>>() {{
-        put("English", Arrays.asList("Vocabulary", "Grammar", "Reading"));
-        put("Math", Arrays.asList("Algebra", "Geometry", "Calculus"));
-    }};
+    private final Map<String, List<String>> topicMap = new HashMap<String, List<String>>();
+//    {{
+//        put("English", Arrays.asList("Vocabulary", "Grammar", "Reading"));
+//        put("Math", Arrays.asList("Algebra", "Geometry", "Calculus"));
+//    }};
     private AlarmData currentEditingAlarmData;
     private int currentAlarmIndex;
     private Spinner spinnerSubject, spinnerTopic, spinnerDifficulty;
@@ -52,6 +53,10 @@ public class QuizSetupFragment extends Fragment {
         editTextNumQuestions = view.findViewById(R.id.edit_text_number_questions);
         btnConfirm = view.findViewById(R.id.btn_confirm_quiz_setup);
 
+
+
+
+        setupTopicMap(); // Đưa dữ liệu vào topicMap dựa trên ngôn ngữ
         setupSubjectSpinner();
         setupDifficultySpinner();
 
@@ -61,8 +66,9 @@ public class QuizSetupFragment extends Fragment {
             String difficulty = spinnerDifficulty.getSelectedItem().toString();
             String numQuestionsStr = editTextNumQuestions.getText().toString().trim();
 
+//            em đổi thành id string thay hard code
             if (numQuestionsStr.isEmpty()) {
-                Toast.makeText(getContext(), "Please enter number of questions", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), getString(R.string.error_empty_questions), Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -88,6 +94,22 @@ public class QuizSetupFragment extends Fragment {
         });
 
         return view;
+    }
+    //bổ sung setupTopicmap
+    private void setupTopicMap() {
+        topicMap.put(getString(R.string.subject_english),
+                Arrays.asList(
+                        getString(R.string.topic_vocabulary),
+                        getString(R.string.topic_grammar),
+                        getString(R.string.topic_reading)
+                ));
+
+        topicMap.put(getString(R.string.subject_math),
+                Arrays.asList(
+                        getString(R.string.topic_algebra),
+                        getString(R.string.topic_geometry),
+                        getString(R.string.topic_calculus)
+                ));
     }
 
     private void setupSubjectSpinner() {
@@ -120,7 +142,13 @@ public class QuizSetupFragment extends Fragment {
     }
 
     private void setupDifficultySpinner() {
-        List<String> difficulties = Arrays.asList("Easy", "Medium", "Hard", "Nightmare");
+//        List<String> difficulties = Arrays.asList("Easy", "Medium", "Hard", "Nightmare");
+        List<String> difficulties = Arrays.asList(
+                getString(R.string.difficulty_easy),
+                getString(R.string.difficulty_medium),
+                getString(R.string.difficulty_hard),
+                getString(R.string.difficulty_nightmare)
+        );
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, difficulties);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerDifficulty.setAdapter(adapter);
