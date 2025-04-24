@@ -70,6 +70,7 @@ public class AlarmRingActivity extends AppCompatActivity {
                 stopAlarmService();
 
                 Log.d(TAG, "numsQuestions: " + numQuestions);
+                Log.d(TAG, "subject: " + subject);
 
                 Intent quizIntent = new Intent(AlarmRingActivity.this, QuizActivity.class);
                 quizIntent.putExtra("alarmId", currentAlarmId);

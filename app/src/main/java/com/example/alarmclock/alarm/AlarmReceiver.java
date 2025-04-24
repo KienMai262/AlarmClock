@@ -51,7 +51,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         String subject = intent.getStringExtra("subject");
         String topic = intent.getStringExtra("topic");
         String difficulty = intent.getStringExtra("difficulty");
-        String numQuestions = intent.getStringExtra("numQuestions");
+        int numQuestions = intent.getIntExtra("numQuestions", 5);
 
         Log.d(TAG, "Received alarmId: " + alarmId);
         Log.d(TAG, "Received timerString: " + timerString); // Log timerString
@@ -62,6 +62,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         Log.d(TAG, "Received customDays: " + (customDays != null ? Arrays.toString(customDays) : "null"));
         Log.d(TAG, "Received indexMusic: " + indexMusic);
         Log.d(TAG, "Received knoll: " + knoll);
+        Log.d("Subject: ", subject);
 
         // --- PHÂN TÍCH timerString thành hour và minute ---
         int hour = -1;
@@ -140,7 +141,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             serviceIntent.putExtra("topic", topic);
             serviceIntent.putExtra("difficulty", difficulty);
             serviceIntent.putExtra("numQuestions", numQuestions);
-
+            Log.d("Subject: ", subject);
             try {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     context.startForegroundService(serviceIntent);
@@ -230,7 +231,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     }
 
     // --- Hàm rescheduleNextAlarm (Giữ nguyên logic tái tạo AlarmData) ---
-    private void rescheduleNextAlarm(Context context, int alarmId, int hour, int minute, int loopIndex, boolean[] customDays, int indexMusic, boolean knoll, boolean deleteAfterAlarm, String note, String subject, String topic, String difficulty, String numQuestions) {
+    private void rescheduleNextAlarm(Context context, int alarmId, int hour, int minute, int loopIndex, boolean[] customDays, int indexMusic, boolean knoll, boolean deleteAfterAlarm, String note, String subject, String topic, String difficulty, int numQuestions) {
         Log.d(TAG, "Attempting to reschedule alarm ID: " + alarmId + " by reconstructing AlarmData.");
         String timerStringReconstructed = String.format("%02d:%02d", hour, minute);
         AlarmData reconstructedData = new AlarmData(timerStringReconstructed, indexMusic, knoll, deleteAfterAlarm, note, loopIndex, subject, topic, difficulty, numQuestions);

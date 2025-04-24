@@ -48,7 +48,7 @@
             this.loopIndex = loopIndex;
         }
 
-        public AlarmData(String timerStringReconstructed, int indexMusic, boolean knoll, boolean deleteAfterAlarm, String note, int loopIndex, String subject, String topic, String difficulty, String numQuestions) {
+        public AlarmData(String timerStringReconstructed, int indexMusic, boolean knoll, boolean deleteAfterAlarm, String note, int loopIndex, String subject, String topic, String difficulty, int numQuestions) {
             this.timerString = timerStringReconstructed;
             this.indexMusic = indexMusic;
             this.knoll = knoll;
@@ -58,6 +58,6 @@
             this.subject = subject;
             this.topic = topic;
             this.difficulty = difficulty;
-            this.numQuestions = Integer.parseInt(numQuestions);
+            this.numQuestions = numQuestions;
         }
     }
