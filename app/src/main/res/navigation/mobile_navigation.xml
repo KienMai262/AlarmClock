@@ -46,4 +46,12 @@
         android:id="@+id/navigation_share_data"
         android:name="com.example.alarmclock.ui.share.DataShareFragment"
         tools:layout="@layout/fragment_share_data" />
+
+    <fragment
+        android:id="@+id/navigation_quiz_setup"
+        android:name="com.example.alarmclock.ui.quiz.QuizSetupFragment"
+        android:label="Quiz Setup"
+        tools:layout="@layout/fragment_quiz_setup">
+    </fragment>
+
 </navigation>

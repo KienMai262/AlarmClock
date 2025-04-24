@@ -146,6 +146,10 @@ public class AlarmSchedulerUtil {
         intent.putExtra("deleteAfterAlarm", alarm.deleteAfterAlarm != null && alarm.deleteAfterAlarm);
         intent.putExtra("indexMusic", alarm.indexMusic);
         intent.putExtra("knoll", alarm.knoll != null && alarm.knoll);
+        intent.putExtra("subject", alarm.subject);
+        intent.putExtra("topic", alarm.topic);
+        intent.putExtra("difficulty", alarm.difficulty);
+        intent.putExtra("numQuestions", alarm.numQuestions);
 
         // Chỉ thêm customDays nếu là kiểu tùy chỉnh
         if (alarm.loopIndex == 3) {

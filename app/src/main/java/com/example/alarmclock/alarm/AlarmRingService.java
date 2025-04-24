@@ -78,6 +78,11 @@ public class AlarmRingService extends Service {
         currentAlarmId = intent.getIntExtra("alarmId", -1);
         int soundResourceId = intent.getIntExtra("soundResourceId", -1);
         String alarmNote = intent.getStringExtra("alarmNote");
+        String subject = intent.getStringExtra("subject");
+        String topic = intent.getStringExtra("topic");
+        String difficulty = intent.getStringExtra("difficulty");
+        int numQuestions = intent.getIntExtra("numQuestions", 5);
+
         if (alarmNote == null || alarmNote.isEmpty()) {
             alarmNote = "Báo thức!"; // Ghi chú mặc định
         }
@@ -85,6 +90,7 @@ public class AlarmRingService extends Service {
         Log.i(TAG, "Starting foreground service for alarmId: " + currentAlarmId);
         Log.d(TAG, "Sound resource ID: " + soundResourceId);
         Log.d(TAG, "Alarm note: " + alarmNote);
+        Log.d(TAG, "Subject: " + subject);
 
         // Tạo và hiển thị notification foreground
         Log.d("ALARM_DEBUG", "Building notification...");
@@ -119,6 +125,10 @@ public class AlarmRingService extends Service {
         ringActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         ringActivityIntent.putExtra("alarmId", currentAlarmId);
         ringActivityIntent.putExtra("alarmNote", alarmNote); // Truyền dữ liệu cần thiết
+        ringActivityIntent.putExtra("subject", subject);
+        ringActivityIntent.putExtra("topic", topic);
+        ringActivityIntent.putExtra("difficulty", difficulty);
+        ringActivityIntent.putExtra("numQuestions", numQuestions);
 
 
 

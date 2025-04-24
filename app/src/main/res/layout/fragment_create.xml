@@ -35,8 +35,8 @@
             android:layout_height="wrap_content"/>
 
         <Button
-            android:id="@+id/btnSave"  style="?android:attr/borderlessButtonStyle"
-            android:text="@string/save"
+            android:id="@+id/btnNext"  style="?android:attr/borderlessButtonStyle"
+            android:text="@string/next"
             android:textColor="?attr/android:textColorTertiary"
             android:layout_weight="1"
             android:textStyle="bold"

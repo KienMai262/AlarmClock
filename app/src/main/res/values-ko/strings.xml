@@ -48,7 +48,7 @@
     <string name="choose_a_language">언어 선택</string> <!-- Chọn ngôn ngữ -->
 
     <string name="ok">확인</string> <!-- OK -->
-    <string name="save">저장</string> <!-- Lưu -->
+    <string name="next">저장</string> <!-- Lưu -->
     <string name="cancel">취소</string> <!-- Hủy -->
     <string name="delete">삭제</string> <!-- Xóa -->
     <string name="error">오류</string> <!-- Lỗi -->

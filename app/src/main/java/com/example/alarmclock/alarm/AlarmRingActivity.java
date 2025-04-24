@@ -1,5 +1,6 @@
 package com.example.alarmclock.alarm;
 
+import android.annotation.SuppressLint;
 import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.alarmclock.R; // Đảm bảo R được import
+import com.example.alarmclock.ui.quiz.QuizActivity;
 
 public class AlarmRingActivity extends AppCompatActivity {
     private static final String TAG = "AlarmRingActivity";
@@ -45,12 +47,16 @@ public class AlarmRingActivity extends AppCompatActivity {
         if (alarmNote == null || alarmNote.isEmpty()) {
             alarmNote = "Báo thức!"; // Ghi chú mặc định
         }
+        String subject = intent.getStringExtra("subject");
+        String topic = intent.getStringExtra("topic");
+        String difficulty = intent.getStringExtra("difficulty");
+        int numQuestions = intent.getIntExtra("numQuestions", 5); // Số câu hỏi mặc định là 5
 
         Log.d(TAG,"Displaying UI for alarmId: " + currentAlarmId);
         Log.d(TAG,"Alarm note: " + alarmNote);
 
         TextView noteTextView = findViewById(R.id.alarmLabel);
-        Button stopButton = findViewById(R.id.stopButton);
+        Button doQuizButton = findViewById(R.id.doQuizButton);
 
         if (noteTextView != null) {
             noteTextView.setText(alarmNote);
@@ -58,13 +64,23 @@ public class AlarmRingActivity extends AppCompatActivity {
             Log.w(TAG, "TextView with ID alarmLabel not found.");
         }
 
-        // --- Logic nút Stop ---
-        if (stopButton != null) {
-            stopButton.setOnClickListener(v -> {
-                Log.d(TAG, "Stop button clicked for alarmId: " + currentAlarmId);
+        // logic để hiển thị sang màn hình quiz
+        if (doQuizButton != null) {
+            doQuizButton.setOnClickListener(v -> {
                 stopAlarmService();
-                finish(); // Đóng Activity sau khi yêu cầu dừng Service
+
+                Log.d(TAG, "numsQuestions: " + numQuestions);
+
+                Intent quizIntent = new Intent(AlarmRingActivity.this, QuizActivity.class);
+                quizIntent.putExtra("alarmId", currentAlarmId);
+                quizIntent.putExtra("subject", subject);
+                quizIntent.putExtra("topic", topic);
+                quizIntent.putExtra("difficulty", difficulty);
+                quizIntent.putExtra("numQuestions", numQuestions);
+                startActivity(quizIntent);
+                finish(); // đóng Alarm UI
             });
+
         } else {
             Log.e(TAG, "Button with ID stopButton not found.");
         }

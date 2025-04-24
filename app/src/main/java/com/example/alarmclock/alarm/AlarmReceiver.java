@@ -48,6 +48,10 @@ public class AlarmReceiver extends BroadcastReceiver {
         boolean[] customDays = intent.getBooleanArrayExtra("customDays");
         int indexMusic = intent.getIntExtra("indexMusic", -1);
         boolean knoll = intent.getBooleanExtra("knoll", false);
+        String subject = intent.getStringExtra("subject");
+        String topic = intent.getStringExtra("topic");
+        String difficulty = intent.getStringExtra("difficulty");
+        String numQuestions = intent.getStringExtra("numQuestions");
 
         Log.d(TAG, "Received alarmId: " + alarmId);
         Log.d(TAG, "Received timerString: " + timerString); // Log timerString
@@ -132,6 +136,10 @@ public class AlarmReceiver extends BroadcastReceiver {
             // Sử dụng soundResourceId đã kiểm tra (có thể là default)
             serviceIntent.putExtra("soundResourceId", (soundResourceId <= 0) ? DEFAULT_SOUND_RESOURCE_ID : soundResourceId);
             serviceIntent.putExtra("alarmNote", alarmNote);
+            serviceIntent.putExtra("subject", subject);
+            serviceIntent.putExtra("topic", topic);
+            serviceIntent.putExtra("difficulty", difficulty);
+            serviceIntent.putExtra("numQuestions", numQuestions);
 
             try {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -152,7 +160,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         if (loopIndex != 0) { // Báo thức lặp lại
             Log.d(TAG, "Rescheduling repeating alarm with id: " + alarmId);
             // Gọi hàm reschedule, dùng hour, minute đã parse
-            rescheduleNextAlarm(context, alarmId, hour, minute, loopIndex, customDays, indexMusic, knoll, deleteAfterAlarm, alarmNote);
+            rescheduleNextAlarm(context, alarmId, hour, minute, loopIndex, customDays, indexMusic, knoll, deleteAfterAlarm, alarmNote, subject, topic, difficulty, numQuestions);
         } else {
             /// --- Xử lý báo thức một lần ---
             Log.i(TAG,"One-time alarm " + alarmId + " triggered.");
@@ -222,10 +230,10 @@ public class AlarmReceiver extends BroadcastReceiver {
     }
 
     // --- Hàm rescheduleNextAlarm (Giữ nguyên logic tái tạo AlarmData) ---
-    private void rescheduleNextAlarm(Context context, int alarmId, int hour, int minute, int loopIndex, boolean[] customDays, int indexMusic, boolean knoll, boolean deleteAfterAlarm, String note) {
+    private void rescheduleNextAlarm(Context context, int alarmId, int hour, int minute, int loopIndex, boolean[] customDays, int indexMusic, boolean knoll, boolean deleteAfterAlarm, String note, String subject, String topic, String difficulty, String numQuestions) {
         Log.d(TAG, "Attempting to reschedule alarm ID: " + alarmId + " by reconstructing AlarmData.");
         String timerStringReconstructed = String.format("%02d:%02d", hour, minute);
-        AlarmData reconstructedData = new AlarmData(timerStringReconstructed, indexMusic, knoll, deleteAfterAlarm, note, loopIndex);
+        AlarmData reconstructedData = new AlarmData(timerStringReconstructed, indexMusic, knoll, deleteAfterAlarm, note, loopIndex, subject, topic, difficulty, numQuestions);
         if (loopIndex == 3 && customDays != null && customDays.length == 7) {
             try {
                 reconstructedData.optionOther[0] = new Pair<>(R.string.monday,    customDays[0]);

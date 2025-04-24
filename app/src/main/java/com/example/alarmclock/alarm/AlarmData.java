@@ -3,7 +3,9 @@
     import com.example.alarmclock.Pair;
     import com.example.alarmclock.R;
 
-    public class AlarmData {
+    import java.io.Serializable;
+
+    public class AlarmData implements Serializable {
         public Pair<String, String>[] items = new Pair[] {
                 new Pair<>("It's going to be a good day", "@raw/it_s_going_to_be_a_good_day"),
                 new Pair<>("See you again meow", "@raw/see_you_again_meow"),
@@ -32,6 +34,11 @@
         public String note;
         public int loopIndex = 0;
 
+        public String subject;
+        public String topic;
+        public String difficulty;
+        public int numQuestions;
+
         public AlarmData(String timerString,int indexMusic, Boolean knoll, Boolean deleteAfterAlarm, String note, int loopIndex) {
             this.timerString = timerString;
             this.indexMusic = indexMusic;
@@ -39,5 +46,18 @@
             this.deleteAfterAlarm = deleteAfterAlarm;
             this.note = note;
             this.loopIndex = loopIndex;
+        }
+
+        public AlarmData(String timerStringReconstructed, int indexMusic, boolean knoll, boolean deleteAfterAlarm, String note, int loopIndex, String subject, String topic, String difficulty, String numQuestions) {
+            this.timerString = timerStringReconstructed;
+            this.indexMusic = indexMusic;
+            this.knoll = knoll;
+            this.deleteAfterAlarm = deleteAfterAlarm;
+            this.note = note;
+            this.loopIndex = loopIndex;
+            this.subject = subject;
+            this.topic = topic;
+            this.difficulty = difficulty;
+            this.numQuestions = Integer.parseInt(numQuestions);
         }
     }

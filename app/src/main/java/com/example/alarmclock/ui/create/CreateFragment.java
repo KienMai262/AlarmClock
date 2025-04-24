@@ -145,10 +145,38 @@ public class CreateFragment extends Fragment {
         populateUiFromData(context);
 
         // --- Thiết lập Listeners cho các nút và controls ---
-        binding.btnSave.setOnClickListener(v -> {
-            Log.d("CreateFragment", "Save button clicked. Mode: " + (currentAlarmIndex == -1 ? "CREATE" : "EDIT"));
-            saveAlarm(context);
+        binding.btnNext.setOnClickListener(v -> {
+            Log.d("CreateFragment", "Next button clicked. Moving to quiz setup.");
+
+            // Cập nhật dữ liệu giờ từ TimePicker
+            LocalTime timer = LocalTime.of(binding.timePicker.getHour(), binding.timePicker.getMinute());
+            DateTimeFormatter storageFormatter = DateTimeFormatter.ISO_LOCAL_TIME;
+            currentEditingAlarmData.timerString = timer.format(storageFormatter);
+
+            // Điều hướng đến fragment mới để thiết lập thông tin quiz
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("alarmData", currentEditingAlarmData);
+            bundle.putInt("alarmIndex", currentAlarmIndex); // để biết là đang EDIT hay CREATE
+
+            NavController navController = NavHostFragment.findNavController(this);
+            navController.navigate(R.id.navigation_quiz_setup, bundle);
         });
+
+        getParentFragmentManager().setFragmentResultListener("quizSetupResult", this, (requestKey, result) -> {
+            if (result != null) {
+                AlarmData updatedData = (AlarmData) result.getSerializable("alarmData");
+                int alarmIndex = result.getInt("alarmIndex");
+
+                // Cập nhật dữ liệu nếu cần
+                currentEditingAlarmData = updatedData;
+                currentAlarmIndex = alarmIndex;
+
+                // GỌI SAVE DATA TẠI ĐÂY
+                saveAlarm(context);
+            }
+        });
+
+
 
 
         binding.btnCancel.setOnClickListener(v -> {
