@@ -46,7 +46,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
-                android:text="Đáp án A" />
+                android:text="Đáp án A"
+                android:backgroundTint="?attr/colorPrimary"
+                android:textColor="?attr/colorOnPrimary"
+                />
 
             <Button
                 android:id="@+id/answerB"
@@ -54,7 +57,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
-                android:text="Đáp án B" />
+                android:text="Đáp án B"
+                android:backgroundTint="?attr/colorPrimary"
+                android:textColor="?attr/colorOnPrimary"/>
 
             <Button
                 android:id="@+id/answerC"
@@ -62,7 +67,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
-                android:text="Đáp án C" />
+                android:text="Đáp án C"
+                android:backgroundTint="?attr/colorPrimary"
+                android:textColor="?attr/colorOnPrimary"/>
 
             <Button
                 android:id="@+id/answerD"
@@ -70,7 +77,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
-                android:text="Đáp án D" />
+                android:text="Đáp án D"
+                android:backgroundTint="?attr/colorPrimary"
+                android:textColor="?attr/colorOnPrimary"/>
         </GridLayout>
     </LinearLayout>
 

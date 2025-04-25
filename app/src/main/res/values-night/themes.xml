@@ -6,7 +6,7 @@
 
         <item name="colorPrimary">#FFFFFF</item>
         <item name="colorPrimaryVariant">#C8FF4C</item>
-        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorOnPrimary">@color/black</item>
         <item name="colorSecondary">#FC253A</item>
         <item name="colorSecondaryVariant">#FC253A</item>
         <item name="colorOnSecondary">@color/white</item>
@@ -20,6 +20,7 @@
         <item name="android:textColorTertiary">#A2C143</item>
 
         <item name="android:numbersTextColor">#A2C143</item>
+
 
     </style>
 
