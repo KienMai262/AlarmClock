@@ -36,6 +36,7 @@ public class QuizSetupFragment extends Fragment {
     private Spinner spinnerSubject, spinnerTopic, spinnerDifficulty;
     private EditText editTextNumQuestions;
     private Button btnConfirm;
+    private Button btnBack;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -52,9 +53,13 @@ public class QuizSetupFragment extends Fragment {
         spinnerDifficulty = view.findViewById(R.id.spinner_difficulty);
         editTextNumQuestions = view.findViewById(R.id.edit_text_number_questions);
         btnConfirm = view.findViewById(R.id.btn_confirm_quiz_setup);
+        btnBack = view.findViewById(R.id.btn_back);
 
 
-
+        btnBack.setOnClickListener(v -> {
+            NavController navController = NavHostFragment.findNavController(this);
+            navController.popBackStack();
+        });
 
         setupTopicMap(); // Đưa dữ liệu vào topicMap dựa trên ngôn ngữ
         setupSubjectSpinner();

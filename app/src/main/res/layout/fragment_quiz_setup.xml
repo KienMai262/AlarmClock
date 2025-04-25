@@ -75,6 +75,6 @@
             android:text="@string/confirm_button"
             android:textColor="?attr/colorPrimary"
             android:backgroundTint="?attr/colorAccent"
-        android:layout_marginTop="16dp" />
+            android:layout_marginTop="16dp" /> />
     </LinearLayout>
 </ScrollView>

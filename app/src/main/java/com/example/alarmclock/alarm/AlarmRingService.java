@@ -32,6 +32,7 @@ public class AlarmRingService extends Service {
     private static final String CHANNEL_ID = "ALARM_RING_CHANNEL";
     private static final int NOTIFICATION_ID = 123; // ID duy nhất cho notification
     public static final String ACTION_STOP_ALARM = "com.example.alarmclock.STOP_ALARM";
+    public static final String ACTION_REDUCE_VOLUME = "com.example.alarmclock.REDUCE_VOLUME"; // Action mới
 
     private MediaPlayer mediaPlayer;
     private AudioManager audioManager;
@@ -39,6 +40,7 @@ public class AlarmRingService extends Service {
     private int originalVolume;
     private boolean isVibrating = false; // Theo dõi trạng thái rung
     private int currentAlarmId = -1;
+    private boolean isVolumeReduced = false;
 
     @Nullable
     @Override
@@ -66,12 +68,21 @@ public class AlarmRingService extends Service {
         Log.d(TAG, "Service onStartCommand");
 
         // Xử lý action dừng báo thức (từ notification hoặc Activity)
-        if (intent != null && ACTION_STOP_ALARM.equals(intent.getAction())) {
+        String action = intent.getAction();
+        if (ACTION_STOP_ALARM.equals(action)) {
             Log.d(TAG, "Received stop action.");
-            stopAlarmSound(); // Dừng nhạc và rung
-            stopForeground(true); // Xóa notification
-            stopSelf(); // Dừng service
+            stopAlarmSound(true); // Dừng nhạc, rung, khôi phục âm lượng
+            stopForeground(true);
+            stopSelf();
             return START_NOT_STICKY;
+        }
+        // Xử lý action giảm âm lượng
+        else if (ACTION_REDUCE_VOLUME.equals(action)) {
+            Log.d(TAG, "Received reduce volume action.");
+            reduceVolume();
+            stopVibration(); // Có thể muốn tắt rung khi bắt đầu quiz
+            // Không dừng service, chỉ giảm âm lượng
+            return START_STICKY; // Giữ service chạy
         }
 
         // Lấy dữ liệu từ Intent được gửi bởi AlarmReceiver
@@ -139,11 +150,30 @@ public class AlarmRingService extends Service {
         return START_NOT_STICKY;
     }
 
+    private void reduceVolume() {
+        if (mediaPlayer != null && mediaPlayer.isPlaying() && audioManager != null && !isVolumeReduced) {
+            try {
+                if (originalVolume == -1) {
+                    originalVolume = audioManager.getStreamVolume(AudioManager.STREAM_ALARM);
+                }
+                int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM);
+                int halfVolume = Math.max(1, maxVolume / 2);
+                audioManager.setStreamVolume(AudioManager.STREAM_ALARM, halfVolume, 0);
+                isVolumeReduced = true;
+                Log.d(TAG, "Reduced ALARM stream volume to: " + halfVolume);
+            } catch (Exception e) {
+                Log.e(TAG, "Error reducing volume", e);
+            }
+        } else {
+            Log.w(TAG, "Cannot reduce volume: MediaPlayer not playing, AudioManager null, or volume already reduced.");
+        }
+    }
+
     private void startAlarmSound(int soundResourceId) {
         if (mediaPlayer != null && mediaPlayer.isPlaying()) {
             Log.w(TAG,"MediaPlayer is already playing.");
             // Có thể bạn muốn dừng cái cũ trước khi bắt đầu cái mới nếu alarmId khác?
-            // releaseMediaPlayer();
+            releaseMediaPlayer();
             return;
         }
         if (mediaPlayer == null) {
@@ -188,14 +218,14 @@ public class AlarmRingService extends Service {
                         mp.start();
                     } catch (IllegalStateException e) {
                         Log.e(TAG, "IllegalStateException on MediaPlayer start after prepare", e);
-                        stopAlarmSound(); // Dừng nếu lỗi
+                        stopAlarmSound(true); // Dừng nếu lỗi
                     }
                 });
 
                 mediaPlayer.setOnErrorListener((mp, what, extra) -> {
                     Log.e(TAG, "MediaPlayer error: what=" + what + ", extra=" + extra);
                     Toast.makeText(this, "Lỗi phát âm thanh báo thức", Toast.LENGTH_SHORT).show();
-                    stopAlarmSound(); // Dừng nếu lỗi
+                    stopAlarmSound(true); // Dừng nếu lỗi
                     return true; // Đã xử lý lỗi
                 });
 
@@ -237,19 +267,23 @@ public class AlarmRingService extends Service {
     }
 
 
-    private void stopAlarmSound() {
-        Log.i(TAG, "Stopping alarm sound and vibration.");
+    private void stopAlarmSound(boolean restoreVolume) {
+        Log.i(TAG, "Stopping alarm sound. Restore volume: " + restoreVolume);
         releaseMediaPlayer();
         stopVibration();
 
-        // Khôi phục âm lượng gốc
-        if (audioManager != null) {
+        // Khôi phục âm lượng gốc CHỈ KHI được yêu cầu (ví dụ: khi tắt hoàn toàn)
+        if (restoreVolume && audioManager != null && originalVolume != -1) {
             try {
                 audioManager.setStreamVolume(AudioManager.STREAM_ALARM, originalVolume, 0);
                 Log.d(TAG, "Restored ALARM stream volume to: " + originalVolume);
+                originalVolume = -1; // Reset lại
+                isVolumeReduced = false; // Reset cờ
             } catch (Exception e) {
                 Log.e(TAG, "Error restoring volume", e);
             }
+        } else if (!restoreVolume){
+            Log.d(TAG, "Volume not restored (likely entering quiz).");
         }
     }
 
@@ -287,7 +321,7 @@ public class AlarmRingService extends Service {
     @Override
     public void onDestroy() {
         Log.d(TAG, "Service onDestroy");
-        stopAlarmSound(); // Đảm bảo mọi thứ dừng lại khi service bị hủy
+        stopAlarmSound(true); // Đảm bảo mọi thứ dừng lại khi service bị hủy
         super.onDestroy();
     }
 

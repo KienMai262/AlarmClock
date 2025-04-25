@@ -62,6 +62,20 @@
     <string name="confirm_button">Xác nhận</string>
     <string name="error_empty_questions">Vui lòng nhập số câu hỏi</string>
 
+    <string name="detail">Chi tiết</string>
+    <string name="answer_details">Chi tiết câu trả lời</string>
+    <string name="view_answers">Xem câu trả lời</string>
+    <string name="time_out">Hết thời gian</string>
+    <string name="complete">Hoàn thành</string>
+    <string name="difficulty">Độ khó</string>
+    <string name="score">Điểm số</string>
+    <string name="pass">Đạt</string>
+    <string name="fail">Không đạt</string>
+    <string name="question">Câu hỏi</string>
+    <string name="you_choose">Bạn đã chọn</string>
+    <string name="the_correct_answer">Đáp án đúng</string>
+
+
     <string name="subject_english">Tiếng Anh</string>
     <string name="subject_math">Toán</string>
     <string name="topic_vocabulary">Từ vựng</string>

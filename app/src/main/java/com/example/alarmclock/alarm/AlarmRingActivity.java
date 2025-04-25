@@ -106,7 +106,7 @@ public class AlarmRingActivity extends AppCompatActivity {
             final int finalNumQuestions = numQuestions;
 
             doQuizButton.setOnClickListener(v -> {
-                stopAlarmService();
+                sendReduceVolumeCommand();
 
                 Log.d(TAG, "Starting Quiz - numsQuestions: " + finalNumQuestions);
                 Log.d(TAG, "Starting Quiz - subject: " + finalSubject); // Log này bây giờ nên đúng
@@ -124,6 +124,13 @@ public class AlarmRingActivity extends AppCompatActivity {
         } else {
             Log.e(TAG, "Button with ID stopButton not found.");
         }
+    }
+
+    private void sendReduceVolumeCommand() {
+        Log.i(TAG,"Sending reduce volume request to AlarmRingService.");
+        Intent reduceIntent = new Intent(this, AlarmRingService.class);
+        reduceIntent.setAction(AlarmRingService.ACTION_REDUCE_VOLUME);
+        startService(reduceIntent); // Gửi yêu cầu giảm âm lượng đến Service
     }
 
     // Gửi yêu cầu dừng đến Service
