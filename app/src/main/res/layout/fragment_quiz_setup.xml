@@ -27,7 +27,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Subject" />
+            android:text="@string/label_subject" />
         <Spinner
             android:id="@+id/spinner_subject"
             android:layout_width="match_parent"
@@ -37,7 +37,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Topic"
+            android:text="@string/label_topic"
             android:layout_marginTop="8dp" />
         <Spinner
             android:id="@+id/spinner_topic"
@@ -48,7 +48,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Difficulty"
+            android:text="@string/label_difficulty"
             android:layout_marginTop="8dp" />
         <Spinner
             android:id="@+id/spinner_difficulty"
@@ -59,7 +59,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Number of Questions"
+            android:text="@string/label_number_of_questions"
             android:layout_marginTop="8dp" />
         <EditText
             android:id="@+id/edit_text_number_questions"
@@ -72,7 +72,7 @@
             android:id="@+id/btn_confirm_quiz_setup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Confirm"
+            android:text="@string/confirm_button"
             android:textColor="?attr/colorPrimary"
             android:backgroundTint="?attr/colorAccent"
         android:layout_marginTop="16dp" />
