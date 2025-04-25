@@ -71,7 +71,6 @@ public class QuizSetupFragment extends Fragment {
             String difficulty = spinnerDifficulty.getSelectedItem().toString();
             String numQuestionsStr = editTextNumQuestions.getText().toString().trim();
 
-//            em đổi thành id string thay hard code
             if (numQuestionsStr.isEmpty()) {
                 Toast.makeText(getContext(), getString(R.string.error_empty_questions), Toast.LENGTH_SHORT).show();
                 return;
