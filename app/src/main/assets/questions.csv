@@ -1,0 +1,171 @@
+subject,topic,difficulty,question,optionA,optionB,optionC,optionD,correctAnswer
+Math,Algebra,easy,What is 2 + 3?,4,5,6,7,5
+Math,Algebra,medium,Solve for x: 2x = 10,3,4,5,6,5
+Math,Algebra,hard,What is the solution to x^2 - 4x + 4 = 0?,2,-2,4,0,2
+Math,Algebra,nightmare,Find x if x^2 + 5x + 6 = 0.,-3 and -2,2 and 3,-1 and -6,0 and -6,-3 and -2
+Math,Geometry,easy,What is the sum of angles in a triangle?,90,180,270,360,180
+Math,Geometry,medium,What shape has four equal sides and four right angles?,Square,Rectangle,Trapezoid,Hexagon,Square
+Math,Geometry,hard,Area of a circle with radius 3?,9π,6π,3π,12π,9π
+Math,Geometry,nightmare,How many faces does a dodecahedron have?,10,12,20,6,12
+Math,Calculus,easy,What is the derivative of x^2?,2x,x,2x^2,x^2,2x
+Math,Calculus,medium,What is the integral of 2x dx?,x^2,2x^2,x^2 + C,2x + C,x^2 + C
+Math,Calculus,hard,What is the derivative of sin(x)?,cos(x),-cos(x),-sin(x),tan(x),cos(x)
+Math,Calculus,nightmare,What is the limit of (sin x)/x as x approaches 0?,1,0,undefined,∞,1
+English,Vocabulary,easy,What is the synonym of 'happy'?,sad,angry,joyful,confused,joyful
+English,Vocabulary,medium,Choose the correct antonym for 'ancient'?,old,modern,classic,historic,modern
+English,Vocabulary,hard,What does 'benevolent' mean?,evil,kind,mean,angry,kind
+English,Vocabulary,nightmare,Choose the correct meaning of 'quintessential'?,least important,perfect example,random,opposite,perfect example
+English,Grammar,easy,Choose the correct sentence.,He go to school.,He goes to school.,He going to school.,He goed to school.,He goes to school.
+English,Grammar,medium,Which is a past tense verb?,run,running,ran,will run,ran
+English,Reading,hard,What is the main idea of a passage?,Supporting details,Author's tone,Central point,Grammar rules,Central point
+English,Reading,nightmare,What is an inference?,A direct quote,Something guessed from clues,A summary,A fact,Something guessed from clues
+Math,Algebra,easy,What is 10 - 7?,1,2,3,4,3
+Math,Algebra,medium,If x + 3 = 7, what is x?,1,3,4,5,4
+Math,Algebra,hard,Solve: 3x - 2 = 4x + 5.,-7,7,-5,5,-7
+Math,Algebra,nightmare,What is the result of (x - 2)^2 = 9?,x = 5 or -1,x = 3,x = 2,x = 1,x = 5 or -1
+Math,Geometry,easy,A square has how many sides?,2,3,4,5,4
+Math,Geometry,medium,Which of these is a type of triangle?,Hexagon,Rectangle,Isosceles,Octagon,Isosceles
+Math,Geometry,hard,What is the perimeter of a rectangle with length 6 and width 4?,10,12,20,24,20
+Math,Geometry,nightmare,Find the area of a triangle with base 10 and height 5.,25,20,50,30,25
+Math,Calculus,easy,What is the derivative of 3x?,3,3x,6x,x,3
+Math,Calculus,medium,Integral of x dx is?,x^2,x^2 + C,x^2/2 + C,2x^2 + C,x^2/2 + C
+Math,Calculus,hard,What is the second derivative of x^3?,3,6x,3x^2,6x^2,6x
+Math,Calculus,nightmare,Limit of (1 - cos x)/x^2 as x→0?,0,1/2,1,∞,1/2
+English,Vocabulary,easy,Opposite of 'cold'?,hot,warm,cool,frozen,hot
+English,Vocabulary,medium,What does 'reluctant' mean?,willing,unwilling,eager,brave,unwilling
+English,Vocabulary,hard,Meaning of 'meticulous'?,careless,detailed,fast,slow,detailed
+English,Vocabulary,nightmare,Meaning of 'antediluvian'?,modern,prehistoric,wet,ancient,prehistoric
+English,Grammar,easy,Choose the noun.,quickly,blue,apple,run,apple
+English,Grammar,medium,What is an adjective?,Describes a verb,Describes a noun,An action,An article,Describes a noun
+English,Reading,hard,Author's purpose is?,To entertain,To confuse,To argue,To inform,To inform
+English,Reading,nightmare,What is a theme in literature?,Character's name,Plot summary,Moral or message,Setting,Moral or message
+Math,Algebra,easy,Simplify: 2x + 3x,5x,6x,x,2x,5x
+Math,Algebra,medium,Factor: x^2 - 9,(x+3)(x-3),(x+9)(x-1),(x-9)(x+1),Prime,(x+3)(x-3)
+Math,Algebra,hard,Solve: x^2 + 5x + 6 = 0,x=3 or 2,x=-2 or -3,x=1 or -6,x=-1 or -5,x=-2 or -3
+Math,Algebra,nightmare,Find the roots of x^2 - 2x + 1 = 0.,x=1,x=1 or -1,x=0,x=-1,x=1
+Math,Geometry,easy,A triangle has how many sides?,2,3,4,5,3
+Math,Geometry,medium,What is a 5-sided polygon called?,Pentagon,Hexagon,Octagon,Triangle,Pentagon
+Math,Geometry,hard,Area of circle with r=3?,18π,9π,6π,π,9π
+Math,Geometry,nightmare,What’s the volume of a cube with side 4?,64,16,32,8,64
+Math,Calculus,easy,Derivative of x^2?,2x,x,1,0,2x
+Math,Calculus,medium,What is ∫cos(x) dx?,sin(x),-cos(x),-sin(x),tan(x),sin(x)
+Math,Calculus,hard,Derivative of ln(x)?,1/x,x,ln(x),x^2,1/x
+Math,Calculus,nightmare,Limit of sin(x)/x as x→0?,0,1,∞,Undefined,1
+English,Vocabulary,easy,Antonym of 'happy'?,sad,glad,excited,joyful,sad
+English,Vocabulary,medium,'Eloquent' means?,awkward,well-spoken,loud,quiet,well-spoken
+English,Vocabulary,hard,'Lethargic' means?,lazy,quick,energized,happy,lazy
+English,Vocabulary,nightmare,'Pulchritude' means?,ugliness,beauty,anger,style,beauty
+English,Grammar,easy,What is the verb?,apple,jump,green,quickly,jump
+English,Grammar,medium,Identify the adverb.,slowly,blue,book,cat,slowly
+English,Grammar,hard,Choose correct sentence.,He go to school.,He goes to school.,He gone to school.,He going school.,He goes to school.
+English,Grammar,nightmare,What is a dangling modifier?,A clear subject,A misused verb,A misplaced phrase,A type of noun,A misplaced phrase
+English,Reading,easy,Main idea is?,Topic of text,Summary,Details,Moral,Topic of text
+English,Reading,medium,Skimming helps with?,Understanding grammar,Finding keywords,Analyzing characters,Memorizing,Finding keywords
+English,Reading,hard,Inference is?,Stating the obvious,Guessing with clues,Memorizing facts,Retelling,Guessing with clues
+English,Reading,nightmare,Identify tone: “He snarled angrily.”,Joyful,Angry,Calm,Excited,Angry
+Math,Algebra,easy,3x = 12. What is x?,2,3,4,5,4
+Math,Algebra,medium,What is x if 2x + 1 = 9?,3,4,5,6,4
+Math,Algebra,hard,Solve: 5x + 2 = 3x + 10.,x=2,x=4,x=5,x=8,x=4
+Math,Algebra,nightmare,Find x: x^2 = 49.,x=7,x=±7,x=-7,x=0,x=±7
+Math,Geometry,easy,How many degrees in a right angle?,45,90,180,360,90
+Math,Geometry,medium,What is a chord?,Half a circle,A triangle,Line across a circle,Radius,Line across a circle
+Math,Geometry,hard,How many sides does a dodecagon have?,10,12,8,14,12
+Math,Geometry,nightmare,Area of trapezoid with bases 6,10 and height 4?,32,40,20,25,32
+English,Vocabulary,easy,Opposite of 'up'?,down,left,right,back,down
+English,Vocabulary,medium,What does 'benevolent' mean?,kind,evil,greedy,strict,kind
+English,Vocabulary,hard,Define 'ambiguous'.,unclear,clear,strong,focused,unclear
+English,Vocabulary,nightmare,Define 'defenestrate'.,throw out window,defend,attack,hide,throw out window
+English,Grammar,easy,What is the plural of 'mouse'?,mouses,mouse,mice,meese,mice
+English,Grammar,medium,What’s a preposition?,Dog,Quick,Under,Run,Under
+English,Grammar,hard,What’s the tense in “He had gone”?,present perfect,past perfect,future perfect,past simple,past perfect
+English,Grammar,nightmare,Which is subjunctive?,I was there.,He were king.,She is sad.,They go.,He were king.
+English,Reading,easy,What’s a setting?,Main idea,Place and time,Plot twist,Moral,Place and time
+English,Reading,medium,What’s foreshadowing?,A summary,A hint of future,Ending,Character reveal,A hint of future
+Math,Calculus,easy,What is the derivative of 3x?,3,1,0,x,3
+Math,Calculus,medium,What is ∫x dx?,x^2/2 + C,x + C,1/x + C,ln(x) + C,x^2/2 + C
+Math,Calculus,hard,Find d/dx of e^x.,e^x,x,e,e^x + 1,e^x
+Math,Calculus,nightmare,∫1/(1+x^2) dx = ?,tan⁻¹(x) + C,ln(x) + C,x + C,sin⁻¹(x) + C,tan⁻¹(x) + C
+Math,Algebra,easy,What is x if x + 4 = 9?,3,4,5,6,5
+Math,Algebra,medium,Factor: x^2 + 5x + 4,(x+4)(x+1),(x+2)(x+3),(x+5)(x-1),(x-4)(x-1),(x+4)(x+1)
+Math,Algebra,hard,What is x if 3x^2 = 27?,x=±3,x=3,x=9,x=±9,x=±3
+Math,Algebra,nightmare,Find x: x^2 + x - 6 = 0.,x=2 or -3,x=3 or -2,x=-1 or 6,x=-2 or 3,x=3 or -2
+Math,Geometry,easy,How many sides in a hexagon?,5,6,7,8,6
+Math,Geometry,medium,What’s the sum of angles in triangle?,90,180,360,270,180
+Math,Geometry,hard,Area of triangle with base 8, height 5?,20,40,30,25,20
+Math,Geometry,nightmare,Circle circumference formula?,πr^2,2πr,r^2,πd,2πr
+English,Vocabulary,easy,Meaning of 'cold'?,hot,freezing,fast,slow,freezing
+English,Vocabulary,medium,What does 'brisk' mean?,slow,quick,cold,tired,quick
+English,Vocabulary,hard,Meaning of 'meticulous'?,careful,careless,quick,average,careful
+English,Vocabulary,nightmare,Meaning of 'obfuscate'?,clarify,confuse,delete,repeat,confuse
+English,Grammar,easy,Choose a noun.,run,cat,blue,quickly,cat
+English,Grammar,medium,Pick the conjunction.,and,blue,go,fast,and
+English,Grammar,hard,Identify the passive voice.,He wrote a book.,The book was written.,He is writing.,Write a book.,The book was written.
+English,Grammar,nightmare,Correct sentence?,If I was you...,If I were you...,If I be you...,If I am you...,If I were you...
+English,Reading,easy,Reading helps you...?,forget,imagine,drive,run,imagine
+English,Reading,medium,What is a summary?,Retelling,Prediction,Main idea,Exact text,Retelling
+English,Reading,hard,Theme is...?,Main character,Lesson,Moral,Objective,Lesson
+English,Reading,nightmare,Tone in “He shouted loudly.”?,angry,quiet,happy,bored,angry
+Math,Calculus,easy,∫0 dx = ?,0,C,x,1,C
+Math,Calculus,medium,d/dx (sin(x)) = ?,cos(x),-cos(x),-sin(x),tan(x),cos(x)
+Math,Calculus,hard,What is ∫sec^2(x) dx?,tan(x) + C,sec(x) + C,cos(x) + C,sin(x) + C,tan(x) + C
+Math,Calculus,nightmare,Limit of (1 + 1/n)^n as n→∞?,0,∞,1,e,e
+Math,Algebra,easy,Value of x: x - 2 = 7?,7,5,9,2,9
+Math,Algebra,medium,Factor x^2 - 4x + 4,(x-2)^2,(x+2)^2,(x-4)^2,(x+4)^2,(x-2)^2
+Math,Algebra,hard,Find x: x^2 - 2x - 3 = 0.,x=3 or -1,x=-3 or 1,x=1 or 3,x=2 or -2,x=3 or -1
+Math,Algebra,nightmare,Solve: 2x^2 - x - 6 = 0.,x=2, x=-1.5,x=-1.5 or 2,x=1.5 or -2,x=3 or 2,x=2, x=-1.5
+English,Vocabulary,easy,Opposite of 'fast'?,slow,run,quick,light,slow
+English,Vocabulary,medium,Define 'curious'.,bored,inquisitive,angry,shy,inquisitive
+English,Vocabulary,hard,Define 'perplexed'.,confused,happy,calm,focused,confused
+English,Vocabulary,nightmare,Define 'ubiquitous'.,everywhere,rare,new,hidden,everywhere
+English,Grammar,easy,Identify adjective.,blue,run,car,quickly,blue
+English,Grammar,medium,Choose correct sentence.,He go to school.,He goes to school.,He going school.,He gone school.,He goes to school.
+English,Grammar,hard,Identify indirect object.,He gave me a gift.,He gave a gift.,He gave.,Me.,me
+English,Grammar,nightmare,Identify relative clause.,Who ate cake,To eat cake,He cake,Run now,Who ate cake
+English,Reading,easy,Who is the author?,Writer,Reader,Character,Editor,Writer
+English,Reading,medium,Fiction is?,Real stories,Imaginary stories,Facts,Data,Imaginary stories
+English,Reading,hard,What’s irony?,Opposite of expected,Obvious result,Boring ending,Repetition,Opposite of expected
+English,Reading,nightmare,Tone in “She wept silently.”?,Happy,Sad,Angry,Joyful,Sad
+Math,Geometry,easy,A triangle has how many sides?,2,3,4,5,3
+Math,Geometry,medium,What is the sum of angles in triangle?,90,180,270,360,180
+Math,Geometry,hard,Find area of triangle: base=6, height=4?,12,10,24,14,12
+Math,Geometry,nightmare,Angle of equilateral triangle?,90,120,45,60,60
+Math,Calculus,easy,∫1 dx = ?,x + C,1 + C,C,x,x + C
+Math,Calculus,medium,d/dx of sin(x)?,cos(x),-cos(x),-sin(x),tan(x),cos(x)
+Math,Calculus,hard,∫sec^2(x) dx = ?,tan(x) + C,sec(x) + C,cos(x) + C,sin(x) + C,tan(x) + C
+Math,Calculus,nightmare,d/dx of e^x?,x e^x,e^x,x^2,x,e^x
+Math,Algebra,easy,Solve: x/2 = 3,x=1,x=6,x=5,x=2,x=6
+Math,Algebra,medium,Solve: 3x + 2 = 11,x=2,x=3,x=1,x=4,x=3
+Math,Algebra,hard,Factor: x^2 - 2x - 8 = 0.,(x-4)(x+2),(x-2)(x-4),(x+2)(x+4),(x+4)(x-2),(x-4)(x+2)
+Math,Algebra,nightmare,Find x: x^2 + x - 6 = 0.,x=2 or -3,x=-2 or 3,x=3 or -1,x=1 or -3,x=2 or -3
+English,Vocabulary,easy,Meaning of 'cold'?,hot,warm,freezing,soft,freezing
+English,Vocabulary,medium,Meaning of 'brisk'?,slow,cool and fast,boring,hard,cool and fast
+English,Vocabulary,hard,Meaning of 'meticulous'?,careless,neat,detail-oriented,speedy,detail-oriented
+English,Vocabulary,nightmare,Meaning of 'obfuscate'?,clarify,confuse,help,read,confuse
+English,Grammar,easy,Which is adjective?,blue,run,tree,quickly,blue
+English,Grammar,medium,Which is past tense?,ate,eat,eating,eats,ate
+English,Grammar,hard,Find preposition.,on,blue,dog,walk,on
+English,Grammar,nightmare,Correct use?,If I were you...,If I was you...,If I am you...,If I be you...,If I were you...
+English,Reading,easy,Books are read for...?,eating,listening,learning,jumping,learning
+English,Reading,medium,Main character is...?,Theme,Hero,Setting,Tone,Hero
+English,Reading,hard,Tone in “She smiled gently.”?,Angry,Gentle,Harsh,Afraid,Gentle
+English,Reading,nightmare,Meaning of 'inference'?,Guess based on clues,Summary,Plot,Main idea,Guess based on clues
+Math,Geometry,easy,Rectangle has how many right angles?,1,2,3,4,4
+Math,Geometry,medium,Area of rectangle: 5×3?,8,15,20,10,15
+Math,Geometry,hard,Area of trapezoid: a=4, b=6, h=5?,20,25,30,15,25
+Math,Geometry,nightmare,Circumference of circle: r=3?,6π,9π,12π,18π,6π
+Math,Calculus,easy,d/dx of x^3?,3x^2,x^3,x^2,3x,3x^2
+Math,Calculus,medium,∫3 dx = ?,3x + C,x + C,3 + C,C,3x + C
+Math,Calculus,hard,Limit x→∞ of 1/x?,∞,0,1,undefined,0
+Math,Calculus,nightmare,d/dx of tan(x)?,sec^2(x),cos^2(x),1/cos(x),sin(x),sec^2(x)
+English,Vocabulary,easy,Meaning of 'run'?,walk,crawl,jog,move fast,move fast
+English,Vocabulary,medium,Meaning of 'generous'?,kind and giving,mean,angry,rich,kind and giving
+English,Vocabulary,hard,Meaning of 'serene'?,angry,calm,happy,sad,calm
+English,Vocabulary,nightmare,Meaning of 'antediluvian'?,modern,ancient,new,blue,ancient
+English,Grammar,easy,Pick the plural noun.,cats,run,blue,fast,cats
+English,Grammar,medium,Past form of 'go'?,gone,go,went,going,went
+English,Grammar,hard,Identify conjunction.,and,run,blue,tree,and
+English,Grammar,nightmare,Correct subj-verb?,Neither of them is here.,Neither are here.,None is here.,All is here.,Neither of them is here.
+English,Reading,easy,Who writes books?,reader,author,painter,singer,author
+English,Reading,medium,Theme of a story is...?,Message,Hero,Plot,Character,Message
+English,Reading,hard,Tone in “She shouted angrily.”?,Happy,Angry,Excited,Tired,Angry
+English,Reading,nightmare,Inference means...?,Guess based on info,Opinion,Fact,Plot,

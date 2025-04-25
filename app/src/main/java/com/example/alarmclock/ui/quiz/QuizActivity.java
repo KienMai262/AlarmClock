@@ -1,6 +1,7 @@
 package com.example.alarmclock.ui.quiz;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -26,6 +27,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream; // Thêm import này
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter; // Thêm import này
 import java.lang.reflect.Type;
@@ -97,7 +99,8 @@ public class QuizActivity extends AppCompatActivity {
         currentIndex = 0; // Reset chỉ số câu hỏi
 
         // Lấy và lọc câu hỏi CHO LƯỢT NÀY
-        questionsForThisRound = getFilteredQuestions(subject, topic, difficulty, numQuestionsRequested);
+//        questionsForThisRound = getFilteredQuestions(subject, topic, difficulty, numQuestionsRequested);
+        questionsForThisRound = getFilteredQuestionsFromCSV(this, subject, topic, difficulty, numQuestionsRequested);
 
         if (questionsForThisRound != null && !questionsForThisRound.isEmpty()) {
             // Tạo đối tượng lưu kết quả cho lượt chơi MỚI
@@ -235,104 +238,173 @@ public class QuizActivity extends AppCompatActivity {
         }
     }
 
+    private List<Question> getFilteredQuestionsFromCSV(Context context, String subject, String topic, String difficulty, int numQuestions) {
+        // Load tất cả câu hỏi từ file CSV
+        List<Question> allQuestions = loadQuestionsFromAssets(context);
+
+        // Lọc câu hỏi theo subject, topic và difficulty
+        List<Question> filtered = new ArrayList<>();
+        for (Question q : allQuestions) {
+            if (q.getSubject().equalsIgnoreCase(subject) &&
+                    q.getTopic().equalsIgnoreCase(topic) &&
+                    q.getDifficulty().equalsIgnoreCase(difficulty)) {
+                filtered.add(q);
+            }
+        }
+
+        // Trộn ngẫu nhiên danh sách câu hỏi đã lọc
+        Collections.shuffle(filtered);
+
+        // Trả về danh sách ngẫu nhiên với tối đa numQuestions phần tử
+        return filtered.size() > numQuestions
+                ? new ArrayList<>(filtered.subList(0, numQuestions))
+                : filtered;
+    }
+
+
+    private List<Question> loadQuestionsFromAssets(Context context) {
+        List<Question> questions = new ArrayList<>();
+
+        try (InputStream is = context.getAssets().open("questions.csv");
+             BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
+
+            String line;
+            boolean isFirstLine = true;
+
+            while ((line = reader.readLine()) != null) {
+                if (isFirstLine) {
+                    isFirstLine = false;
+                    continue; // Bỏ qua header
+                }
+
+                String[] parts = line.split(",", -1);
+                if (parts.length >= 9) {
+                    Question question = new Question();
+                    question.setSubject(parts[0].trim());
+                    question.setTopic(parts[1].trim());
+                    question.setDifficulty(parts[2].trim());
+                    question.setContent(parts[3].trim());
+
+                    List<String> options = new ArrayList<>();
+                    options.add(parts[4].trim());
+                    options.add(parts[5].trim());
+                    options.add(parts[6].trim());
+                    options.add(parts[7].trim());
+                    question.setAnswers(options);
+
+                    String correctAnswer = parts[8].trim();
+                    question.setTrueAnswer(correctAnswer);
+
+                    questions.add(question);
+                }
+            }
+        } catch (IOException | NumberFormatException e) {
+            Log.e(TAG, "Error loading CSV from assets", e);
+        }
+
+        return questions;
+    }
+
+
+
 
     // --- Các hàm xử lý Timer, finishQuiz, onDestroy, initQuestionsFileIfNeeded, loadJSON, getFilteredQuestions giữ nguyên như phiên bản trước ---
 
-    private String loadJSONFromSystemFile() {
-
-        File file = new File(getFilesDir(), "questions.json");
-
-        if (!file.exists()) {
-
-            Log.e(TAG, "questions.json not found in system folder");
-
-            return null;
-
-        }
-
-
-
-        StringBuilder sb = new StringBuilder();
-
-        try (FileInputStream fis = new FileInputStream(file);
-
-             InputStreamReader isr = new InputStreamReader(fis);
-
-             BufferedReader reader = new BufferedReader(isr)) {
-
-            String line;
-
-            while ((line = reader.readLine()) != null) {
-
-                sb.append(line);
-
-            }
-
-        } catch (IOException e) {
-
-            Log.e(TAG, "Error reading questions.json from system", e);
-
-            return null;
-
-        }
-
-        return sb.toString();
-
-    }
-    private List<Question> getFilteredQuestions(String subject, String topic, String difficulty, int numQuestions) {
-        // Kiểm tra đầu vào cơ bản
-        if (subject == null || topic == null || difficulty == null) {
-            Log.e(TAG, "Cannot filter questions with null parameters.");
-            return new ArrayList<>(); // Trả về list rỗng
-        }
-
-        String jsonString = loadJSONFromSystemFile();
-        List<Question> matchingQuestions = new ArrayList<>(); // Danh sách chứa câu hỏi khớp
-
-        if (jsonString != null && !jsonString.isEmpty()) {
-            try {
-                Type questionListType = new TypeToken<List<Question>>() {}.getType();
-                // Nên dùng try-catch khi parse JSON
-                List<Question> allQuestions = new Gson().fromJson(jsonString, questionListType);
-
-                if (allQuestions != null) { // Kiểm tra null sau khi parse
-                    for (Question question : allQuestions) {
-                        // Thêm kiểm tra null cho các trường của question để tránh lỗi
-                        if (question != null && question.getSubject() != null && question.getTopic() != null && question.getDifficulty() != null) {
-                            boolean matchesSubject = question.getSubject().equalsIgnoreCase(subject);
-                            boolean matchesTopic = question.getTopic().equalsIgnoreCase(topic);
-                            boolean matchesDifficulty = question.getDifficulty().equalsIgnoreCase(difficulty);
-
-                            if (matchesSubject && matchesTopic && matchesDifficulty) {
-                                matchingQuestions.add(question);
-                            }
-                        } else {
-                            Log.w(TAG, "Skipping invalid question object in JSON data.");
-                        }
-                    }
-                } else {
-                    Log.e(TAG, "Failed to parse JSON string into question list.");
-                }
-            } catch (Exception e) { // Bắt lỗi chung khi parse hoặc xử lý
-                Log.e(TAG, "Error processing questions JSON", e);
-                // Có thể trả về list rỗng hoặc xử lý khác
-                return new ArrayList<>();
-            }
-
-            // Xáo trộn danh sách câu hỏi đã lọc
-            Collections.shuffle(matchingQuestions);
-
-            // Cắt lấy số lượng câu hỏi mong muốn
-            if (matchingQuestions.size() > numQuestions) {
-                // Tạo sublist và trả về một ArrayList mới từ sublist đó
-                return new ArrayList<>(matchingQuestions.subList(0, numQuestions));
-            }
-        } else {
-            Log.w(TAG, "JSON string is null or empty. Cannot load questions.");
-        }
-
-        return matchingQuestions; // Trả về danh sách đã lọc (có thể rỗng)
-    }
+//    private String loadJSONFromSystemFile() {
+//
+//        File file = new File(getFilesDir(), "questions.json");
+//
+//        if (!file.exists()) {
+//
+//            Log.e(TAG, "questions.json not found in system folder");
+//
+//            return null;
+//
+//        }
+//
+//
+//
+//        StringBuilder sb = new StringBuilder();
+//
+//        try (FileInputStream fis = new FileInputStream(file);
+//
+//             InputStreamReader isr = new InputStreamReader(fis);
+//
+//             BufferedReader reader = new BufferedReader(isr)) {
+//
+//            String line;
+//
+//            while ((line = reader.readLine()) != null) {
+//
+//                sb.append(line);
+//
+//            }
+//
+//        } catch (IOException e) {
+//
+//            Log.e(TAG, "Error reading questions.json from system", e);
+//
+//            return null;
+//
+//        }
+//
+//        return sb.toString();
+//
+//    }
+//    private List<Question> getFilteredQuestions(String subject, String topic, String difficulty, int numQuestions) {
+//        // Kiểm tra đầu vào cơ bản
+//        if (subject == null || topic == null || difficulty == null) {
+//            Log.e(TAG, "Cannot filter questions with null parameters.");
+//            return new ArrayList<>(); // Trả về list rỗng
+//        }
+//
+//        String jsonString = loadJSONFromSystemFile();
+//        List<Question> matchingQuestions = new ArrayList<>(); // Danh sách chứa câu hỏi khớp
+//
+//        if (jsonString != null && !jsonString.isEmpty()) {
+//            try {
+//                Type questionListType = new TypeToken<List<Question>>() {}.getType();
+//                // Nên dùng try-catch khi parse JSON
+//                List<Question> allQuestions = new Gson().fromJson(jsonString, questionListType);
+//
+//                if (allQuestions != null) { // Kiểm tra null sau khi parse
+//                    for (Question question : allQuestions) {
+//                        // Thêm kiểm tra null cho các trường của question để tránh lỗi
+//                        if (question != null && question.getSubject() != null && question.getTopic() != null && question.getDifficulty() != null) {
+//                            boolean matchesSubject = question.getSubject().equalsIgnoreCase(subject);
+//                            boolean matchesTopic = question.getTopic().equalsIgnoreCase(topic);
+//                            boolean matchesDifficulty = question.getDifficulty().equalsIgnoreCase(difficulty);
+//
+//                            if (matchesSubject && matchesTopic && matchesDifficulty) {
+//                                matchingQuestions.add(question);
+//                            }
+//                        } else {
+//                            Log.w(TAG, "Skipping invalid question object in JSON data.");
+//                        }
+//                    }
+//                } else {
+//                    Log.e(TAG, "Failed to parse JSON string into question list.");
+//                }
+//            } catch (Exception e) { // Bắt lỗi chung khi parse hoặc xử lý
+//                Log.e(TAG, "Error processing questions JSON", e);
+//                // Có thể trả về list rỗng hoặc xử lý khác
+//                return new ArrayList<>();
+//            }
+//
+//            // Xáo trộn danh sách câu hỏi đã lọc
+//            Collections.shuffle(matchingQuestions);
+//
+//            // Cắt lấy số lượng câu hỏi mong muốn
+//            if (matchingQuestions.size() > numQuestions) {
+//                // Tạo sublist và trả về một ArrayList mới từ sublist đó
+//                return new ArrayList<>(matchingQuestions.subList(0, numQuestions));
+//            }
+//        } else {
+//            Log.w(TAG, "JSON string is null or empty. Cannot load questions.");
+//        }
+//
+//        return matchingQuestions; // Trả về danh sách đã lọc (có thể rỗng)
+//    }
     private void startTimer() {
         stopTimer();
         countDownTimer = new CountDownTimer(TIME_PER_QUESTION, 1000) {
