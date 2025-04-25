@@ -62,6 +62,10 @@
     <string name="confirm_button">확인</string>
     <string name="error_empty_questions">문제 수를 입력해주세요</string>
 
+    <string name="detail">세부 사항</string>
+    <string name="answer_details">답변 세부 정보</string>
+    <string name="view_answers">답변 보기</string>
+
     <string name="subject_english">영어</string>
     <string name="subject_math">수학</string>
     <string name="topic_vocabulary">어휘</string>
@@ -70,6 +74,16 @@
     <string name="topic_algebra">대수</string>
     <string name="topic_geometry">기하학</string>
     <string name="topic_calculus">미적분</string>
+    <string name="time_out">시간 초과</string>
+    <string name="complete">완료</string>
+    <string name="difficulty">난이도</string>
+    <string name="score">점수</string>
+    <string name="pass">통과</string>
+    <string name="fail">실패</string>
+    <string name="question">질문</string>
+    <string name="you_choose">당신이 선택한 답</string>
+    <string name="the_correct_answer">정답</string>
+
 
     <string name="difficulty_easy">쉬움</string>
     <string name="difficulty_medium">보통</string>

@@ -25,7 +25,15 @@
     <fragment
         android:id="@+id/navigation_notifications"
         android:name="com.example.alarmclock.ui.notifications.NotificationsFragment"
-        tools:layout="@layout/fragment_notifications" />
+        android:label="Quiz History"
+        tools:layout="@layout/fragment_quiz_detail">
+        <action
+            android:id="@+id/action_notifications_to_quizDetailFragment"
+            app:destination="@id/quizDetailFragment" />
+        <argument
+            android:name="quizAttempt"
+            app:argType="com.example.alarmclock.ui.quiz.QuizAttempt" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_settings"
@@ -52,6 +60,16 @@
         android:name="com.example.alarmclock.ui.quiz.QuizSetupFragment"
         android:label="Quiz Setup"
         tools:layout="@layout/fragment_quiz_setup">
+    </fragment>
+
+    <fragment
+        android:id="@+id/quizDetailFragment"
+        android:name="com.example.alarmclock.ui.quiz.QuizDetailFragment"
+        android:label="Quiz Details"
+        tools:layout="@layout/fragment_quiz_detail">
+        <argument
+            android:name="quizAttempt"
+            app:argType="com.example.alarmclock.ui.quiz.QuizAttempt"/>
     </fragment>
 
 </navigation>

@@ -13,6 +13,7 @@
     <string name="language">Language</string>
     <string name="about">About</string>
     <string name="format">Format</string>
+    <string name="quiz_history">Quiz History</string>
 
     <string name="loop_option_one_time">One time</string>
     <string name="loop_option_daily">Daily</string>
@@ -62,6 +63,19 @@
     <string name="label_number_of_questions">Number of Questions</string>
     <string name="confirm_button">Confirm</string>
     <string name="error_empty_questions">Please enter number of questions</string>
+
+    <string name="detail">Detail</string>
+    <string name="answer_details">Answer details</string>
+    <string name="view_answers">View Answers</string>
+    <string name="time_out">Time Out</string>
+    <string name="complete">Complete</string>
+    <string name="difficulty">Difficulty</string>
+    <string name="score">Score</string>
+    <string name="pass">Pass</string>
+    <string name="fail">Fail</string>
+    <string name="question">Question</string>
+    <string name="you_choose">You Choose</string>
+    <string name="the_correct_answer">The correct answer</string>
 
     <string name="subject_english">English</string>
     <string name="subject_math">Math</string>

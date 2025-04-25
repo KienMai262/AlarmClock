@@ -7,12 +7,14 @@ import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.alarmclock.R;
+import com.example.alarmclock.alarm.AlarmRingService;
 import com.example.alarmclock.alarm.Question;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -21,37 +23,44 @@ import com.google.gson.reflect.TypeToken;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream; // Thêm import này
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter; // Thêm import này
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections; // Thêm import này
+import java.util.Collections;
 import java.util.List;
 
 public class QuizActivity extends AppCompatActivity {
 
-    private static final long TIME_PER_QUESTION = 10000; // 10 seconds
-    private static final String TAG = "QuizActivity"; // Thêm TAG để Log
+    private static final long TIME_PER_QUESTION = 15000;
+    private static final String TAG = "QuizActivity";
+    private static final String QUIZ_HISTORY_FILENAME = "quiz_history.json";
 
     private TextView questionTextView, timerTextView;
     private Button[] answerButtons;
-    // Biến thành viên để lưu danh sách câu hỏi đã lọc
-    private List<Question> filteredQuestions;
+    private List<Question> questionsForThisRound;
     private int currentIndex = 0;
     private CountDownTimer countDownTimer;
     private int alarmId;
-
-    // Các biến này không cần public, chỉ cần dùng trong Activity này
     private String subject, topic, difficulty;
-    private int numQuestions;
+    private int numQuestionsRequested;
+    private QuizAttempt currentAttempt;
+
+    private LinearLayout quizLayout;
+    private LinearLayout quizResultLayout;
+    private TextView scoreTextView;
+    private Button dismissButton;
+    private Button retryButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
-        initQuestionsFileIfNeeded(); // Tạo file câu hỏi mẫu nếu chưa tồn tại
+        initQuestionsFileIfNeeded();
 
         // Get data from Intent
         Intent intent = getIntent();
@@ -59,9 +68,9 @@ public class QuizActivity extends AppCompatActivity {
         subject = intent.getStringExtra("subject");
         topic = intent.getStringExtra("topic");
         difficulty = intent.getStringExtra("difficulty");
-        numQuestions = intent.getIntExtra("numQuestions", 5);
+        numQuestionsRequested = intent.getIntExtra("numQuestions", 5); // Lưu lại số câu yêu cầu
 
-        Log.d(TAG, "Received data - Subject: " + subject + ", Topic: " + topic + ", Difficulty: " + difficulty + ", NumQuestions: " + numQuestions);
+        Log.d(TAG, "Received data - Subject: " + subject + ", Topic: " + topic + ", Difficulty: " + difficulty + ", NumQuestions: " + numQuestionsRequested);
 
         // Bind views
         timerTextView = findViewById(R.id.timerTextView);
@@ -73,44 +82,203 @@ public class QuizActivity extends AppCompatActivity {
                 findViewById(R.id.answerD)
         };
 
-        // Load and filter questions, GÁN VÀO BIẾN THÀNH VIÊN
-        filteredQuestions = getFilteredQuestions(subject, topic, difficulty, numQuestions);
+        quizLayout = findViewById(R.id.quizLayout);
+        quizResultLayout = findViewById(R.id.quizResultLayout);
+        scoreTextView = findViewById(R.id.scoreTextView);
+        dismissButton = findViewById(R.id.dismissButton);
+        retryButton = findViewById(R.id.retryButton);
 
-        // KIỂM TRA NULL VÀ RỖNG TRƯỚC KHI BẮT ĐẦU QUIZ
-        if (filteredQuestions != null && !filteredQuestions.isEmpty()) {
-            Log.d(TAG, "Starting quiz with " + filteredQuestions.size() + " questions.");
-            displayQuestions(); // Không cần truyền tham số nữa vì dùng biến thành viên
-            showNextQuestion();
+        startNewQuizRound();
+    }
+
+    // Hàm bắt đầu một lượt quiz mới (hoặc làm lại)
+    private void startNewQuizRound() {
+        Log.d(TAG, "Starting new quiz round...");
+        currentIndex = 0; // Reset chỉ số câu hỏi
+
+        // Lấy và lọc câu hỏi CHO LƯỢT NÀY
+        questionsForThisRound = getFilteredQuestions(subject, topic, difficulty, numQuestionsRequested);
+
+        if (questionsForThisRound != null && !questionsForThisRound.isEmpty()) {
+            // Tạo đối tượng lưu kết quả cho lượt chơi MỚI
+            // Số câu hỏi thực tế có thể ít hơn số yêu cầu nếu không đủ câu hỏi trong file JSON
+            currentAttempt = new QuizAttempt(subject, topic, difficulty, questionsForThisRound.size());
+            Log.d(TAG, "Starting quiz with " + questionsForThisRound.size() + " questions.");
+
+            displayCurrentQuestion(); // Hiển thị câu hỏi đầu tiên
+            // startTimer sẽ được gọi trong showNextQuestion sau khi hiển thị xong
         } else {
-            Log.w(TAG, "No suitable questions found or error loading questions.");
+            Log.w(TAG, "No suitable questions found. Cannot start quiz.");
             Toast.makeText(this, "Không tìm thấy câu hỏi phù hợp.", Toast.LENGTH_LONG).show();
+            // Có thể cần gọi một phương thức để tắt báo thức ngay lập tức ở đây nếu muốn
             finish(); // Kết thúc Activity nếu không có câu hỏi
         }
     }
 
-    private String loadJSONFromSystemFile() {
-        File file = new File(getFilesDir(), "questions.json");
-        if (!file.exists()) {
-            Log.e(TAG, "questions.json not found in system folder");
-            return null;
+    // Hiển thị câu hỏi hiện tại và cài đặt nút bấm
+    private void displayCurrentQuestion() {
+        // Kiểm tra trước khi truy cập
+        if (currentAttempt == null || questionsForThisRound == null || currentIndex >= questionsForThisRound.size()) {
+            Log.e(TAG, "Error displaying question: Invalid state.");
+            // Xử lý lỗi, ví dụ kết thúc quiz
+            evaluateQuizAttempt(); // Thử đánh giá kết quả hiện tại
+            return;
         }
 
-        StringBuilder sb = new StringBuilder();
-        try (FileInputStream fis = new FileInputStream(file);
-             InputStreamReader isr = new InputStreamReader(fis);
-             BufferedReader reader = new BufferedReader(isr)) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line);
-            }
-        } catch (IOException e) {
-            Log.e(TAG, "Error reading questions.json from system", e);
-            return null;
+        Question q = questionsForThisRound.get(currentIndex);
+        if (q == null || q.content == null || q.answers == null || q.answers.size() < 4 || q.trueAnswer == null) {
+            Log.e(TAG, "Invalid question data at index: " + currentIndex);
+            // Bỏ qua câu hỏi lỗi và chuyển sang câu tiếp theo
+            currentIndex++;
+            displayCurrentQuestion(); // Gọi lại để hiển thị câu tiếp
+            return;
         }
-        return sb.toString();
+
+        questionTextView.setText(q.content);
+
+        final String currentTrueAnswer = q.trueAnswer; // Lưu đáp án đúng của câu này
+
+        // Cài đặt các nút bấm cho câu hỏi hiện tại
+        for (int i = 0; i < Math.min(answerButtons.length, q.answers.size()); i++) {
+            final String answerText = q.answers.get(i); // Đáp án trên nút này
+            answerButtons[i].setText(answerText);
+            answerButtons[i].setVisibility(View.VISIBLE); // Đảm bảo nút hiện
+            answerButtons[i].setEnabled(true); // Đảm bảo nút bấm được
+
+            answerButtons[i].setOnClickListener(v -> {
+                stopTimer();
+                boolean isCorrect = answerText.trim().equalsIgnoreCase(currentTrueAnswer.trim());
+                // Lưu kết quả câu trả lời này vào lượt chơi hiện tại
+                currentAttempt.addAnswer(q, answerText, isCorrect);
+                Log.d(TAG, "Answered Q" + (currentIndex+1) + ": User='" + answerText + "', Correct='" + currentTrueAnswer + "', Result=" + isCorrect);
+                Log.d(TAG, "Current Score: " + currentAttempt.correctAnswers + "/" + currentAttempt.answeredQuestions.size());
+
+
+                // Chuyển sang câu tiếp theo
+                currentIndex++;
+                displayCurrentQuestion(); // Hiển thị câu hỏi tiếp theo (nếu còn)
+            });
+        }
+
+        // Ẩn các nút không dùng
+        for (int i = q.answers.size(); i < answerButtons.length; i++) {
+            answerButtons[i].setVisibility(View.GONE);
+        }
+
+        startTimer(); // Bắt đầu đếm giờ cho câu hỏi này
     }
 
 
+    // Hàm này không còn cần thiết vì logic đã tích hợp vào displayCurrentQuestion
+    // private void showNextQuestion() { ... }
+
+    // Hàm này cũng không còn cần thiết vì logic đã tích hợp vào displayCurrentQuestion
+    // private void displayQuestions() { ... }
+
+
+    // Hàm đánh giá kết quả cuối lượt chơi
+    @SuppressLint("DefaultLocale") // Cho String.format
+    private void evaluateQuizAttempt() {
+        stopTimer();
+        if (currentAttempt == null) {
+            Log.e(TAG, "Cannot evaluate null attempt.");
+            finish();
+            return;
+        }
+
+        double scorePercent = currentAttempt.getScorePercentage();
+        boolean passed = scorePercent >= 50.0;
+        currentAttempt.finishAttempt(passed);
+
+        Log.i(TAG, "Quiz attempt finished. Score: " + currentAttempt.correctAnswers + "/" + currentAttempt.totalQuestionsInThisAttempt + " (" + String.format("%.1f", scorePercent) + "%). Passed: " + passed);
+        saveQuizAttemptToHistory(currentAttempt);
+
+        // ---- HIỂN THỊ KẾT QUẢ ----
+        quizLayout.setVisibility(View.GONE); // Ẩn phần làm quiz
+        quizResultLayout.setVisibility(View.VISIBLE); // Hiện phần kết quả
+        scoreTextView.setText(String.format("Điểm: %.1f%%", scorePercent)); // Hiển thị điểm
+
+        if (passed) {
+            dismissButton.setVisibility(View.VISIBLE); // Hiện nút tắt
+            retryButton.setVisibility(View.GONE);    // Ẩn nút thử lại
+            dismissButton.setOnClickListener(v -> {
+                Log.d(TAG, "Dismiss button clicked.");
+                sendStopAlarmCommand(); // Gửi lệnh dừng service
+                finish(); // Đóng màn hình quiz
+            });
+        } else {
+            dismissButton.setVisibility(View.GONE);     // Ẩn nút tắt
+            retryButton.setVisibility(View.VISIBLE);     // Hiện nút thử lại
+            retryButton.setOnClickListener(v -> {
+                Log.d(TAG, "Retry button clicked.");
+                quizResultLayout.setVisibility(View.GONE); // Ẩn kết quả
+                quizLayout.setVisibility(View.VISIBLE);    // Hiện lại quiz
+                startNewQuizRound(); // Bắt đầu lượt mới
+            });
+        }
+    }
+    private void sendStopAlarmCommand() {
+        Log.i(TAG,"Sending stop request to AlarmRingService.");
+        Intent stopIntent = new Intent(this, AlarmRingService.class);
+        stopIntent.setAction(AlarmRingService.ACTION_STOP_ALARM);
+        startService(stopIntent);
+    }
+
+    // Được gọi khi hết giờ hoặc khi hết câu hỏi
+    private void handleEndOfQuestion() {
+        if (currentIndex >= questionsForThisRound.size()) {
+            // Đã hết câu hỏi, đánh giá kết quả
+            evaluateQuizAttempt();
+        } else {
+            // Vẫn còn câu hỏi, hiển thị câu tiếp theo
+            displayCurrentQuestion();
+        }
+    }
+
+
+    // --- Các hàm xử lý Timer, finishQuiz, onDestroy, initQuestionsFileIfNeeded, loadJSON, getFilteredQuestions giữ nguyên như phiên bản trước ---
+
+    private String loadJSONFromSystemFile() {
+
+        File file = new File(getFilesDir(), "questions.json");
+
+        if (!file.exists()) {
+
+            Log.e(TAG, "questions.json not found in system folder");
+
+            return null;
+
+        }
+
+
+
+        StringBuilder sb = new StringBuilder();
+
+        try (FileInputStream fis = new FileInputStream(file);
+
+             InputStreamReader isr = new InputStreamReader(fis);
+
+             BufferedReader reader = new BufferedReader(isr)) {
+
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+
+                sb.append(line);
+
+            }
+
+        } catch (IOException e) {
+
+            Log.e(TAG, "Error reading questions.json from system", e);
+
+            return null;
+
+        }
+
+        return sb.toString();
+
+    }
     private List<Question> getFilteredQuestions(String subject, String topic, String difficulty, int numQuestions) {
         // Kiểm tra đầu vào cơ bản
         if (subject == null || topic == null || difficulty == null) {
@@ -165,101 +333,18 @@ public class QuizActivity extends AppCompatActivity {
 
         return matchingQuestions; // Trả về danh sách đã lọc (có thể rỗng)
     }
-
-    // showNextQuestion bây giờ sử dụng biến thành viên filteredQuestions
-    private void showNextQuestion() {
-        // Kiểm tra lại filteredQuestions ở đây cho chắc chắn (dù đã kiểm tra ở onCreate)
-        if (filteredQuestions == null || currentIndex >= filteredQuestions.size()) {
-            finishQuiz();
-            return;
-        }
-
-        Question q = filteredQuestions.get(currentIndex);
-        // Thêm kiểm tra null cho các trường của q
-        if (q == null || q.content == null || q.answers == null || q.answers.size() < 4 || q.trueAnswer == null) {
-            Log.e(TAG, "Invalid question data at index: " + currentIndex);
-            // Bỏ qua câu hỏi lỗi và chuyển sang câu tiếp theo
-            currentIndex++;
-            showNextQuestion();
-            return;
-        }
-
-        questionTextView.setText(q.content);
-
-        // Đảm bảo có đủ 4 nút và 4 đáp án
-        for (int i = 0; i < Math.min(answerButtons.length, q.answers.size()); i++) {
-            String answerText = q.answers.get(i);
-            answerButtons[i].setText(answerText);
-            // Lưu lại đáp án đúng của câu hỏi này để so sánh trong listener
-            final String currentTrueAnswer = q.trueAnswer;
-
-            answerButtons[i].setOnClickListener(v -> {
-                stopTimer(); // Dừng timer khi câu trả lời được chọn
-                Button clickedButton = (Button) v;
-                String selectedAnswer = clickedButton.getText().toString();
-
-                if (selectedAnswer.trim().equalsIgnoreCase(currentTrueAnswer.trim())) {
-                    Log.d(TAG, "Correct answer selected!");
-                    currentIndex++;
-                    showNextQuestion(); // Chuyển sang câu hỏi tiếp theo
-                } else {
-                    Log.d(TAG, "Incorrect answer selected.");
-                    restartAlarm(); // Đáp án sai
-                }
-            });
-        }
-        // Ẩn các nút thừa nếu câu hỏi có ít hơn 4 đáp án (trường hợp hiếm)
-        for (int i = q.answers.size(); i < answerButtons.length; i++) {
-            answerButtons[i].setVisibility(View.GONE);
-        }
-        // Hiện lại các nút nếu trước đó bị ẩn
-        for (int i = 0; i < q.answers.size() && i < answerButtons.length; i++) {
-            answerButtons[i].setVisibility(View.VISIBLE);
-        }
-
-
-        startTimer(); // Khởi động lại bộ đếm thời gian cho câu hỏi mới
-    }
-
-    // displayQuestions bây giờ sử dụng biến thành viên filteredQuestions
-    private void displayQuestions() {
-        // Không cần kiểm tra null/empty ở đây nữa vì đã làm ở onCreate
-        // Chỉ cần hiển thị câu hỏi đầu tiên (currentIndex = 0)
-        Question q = filteredQuestions.get(currentIndex);
-
-        // Thêm kiểm tra null cho các trường của q
-        if (q == null || q.content == null || q.answers == null || q.answers.size() < 4 || q.trueAnswer == null) {
-            Log.e(TAG, "Invalid initial question data at index: 0");
-            Toast.makeText(this, "Lỗi dữ liệu câu hỏi.", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
-
-        questionTextView.setText(q.content);  // Hiển thị nội dung câu hỏi
-
-        // Hiển thị các đáp án cho câu hỏi đầu tiên
-        for (int i = 0; i < Math.min(answerButtons.length, q.answers.size()); i++) {
-            answerButtons[i].setText(q.answers.get(i));
-            // Listener sẽ được đặt lại trong showNextQuestion cho từng câu
-        }
-
-        // Không gọi startTimer ở đây nữa, nó sẽ được gọi trong showNextQuestion
-    }
-
-
     private void startTimer() {
-        stopTimer(); // Dừng timer cũ nếu có
+        stopTimer();
         countDownTimer = new CountDownTimer(TIME_PER_QUESTION, 1000) {
-            @SuppressLint("SetTextI18n") // Bỏ qua cảnh báo hardcoded string "00:"
+            @SuppressLint("SetTextI18n")
             public void onTick(long millisUntilFinished) {
-                // Format thời gian còn lại thành MM:SS hoặc chỉ SS
                 long seconds = millisUntilFinished / 1000;
-                timerTextView.setText("00:" + String.format("%02d", seconds)); // Luôn hiển thị 2 chữ số giây
+                timerTextView.setText("00:" + String.format("%02d", seconds));
             }
 
             public void onFinish() {
-                Log.d(TAG, "Timer finished.");
-                restartAlarm(); // Hết giờ
+                Log.d(TAG, "Timer finished for Q" + (currentIndex + 1));
+                handleTimeout(); // Gọi hàm xử lý hết giờ
             }
         };
         countDownTimer.start();
@@ -268,57 +353,116 @@ public class QuizActivity extends AppCompatActivity {
     private void stopTimer() {
         if (countDownTimer != null) {
             countDownTimer.cancel();
-            countDownTimer = null; // Đặt lại thành null
+            countDownTimer = null;
         }
     }
 
-    private void restartAlarm() {
-        Toast.makeText(this, "Sai hoặc hết thời gian!", Toast.LENGTH_SHORT).show(); // Thay đổi thông báo
-        // Hiện tại chỉ kết thúc quiz, không reschedule báo thức
-        finish();
+    // Xử lý khi hết giờ cho một câu hỏi
+    private void handleTimeout() {
+        Toast.makeText(this, "Hết giờ!", Toast.LENGTH_SHORT).show();
+        // Ghi nhận câu trả lời là sai (hoặc không trả lời)
+        if (currentAttempt != null && currentIndex < questionsForThisRound.size()) {
+            Question currentQuestion = questionsForThisRound.get(currentIndex);
+            currentAttempt.addAnswer(currentQuestion, "[TIMEOUT]", false); // Ghi nhận là timeout và sai
+            Log.d(TAG, "Timeout on Q" + (currentIndex+1));
+            Log.d(TAG, "Current Score: " + currentAttempt.correctAnswers + "/" + currentAttempt.answeredQuestions.size());
+
+        }
+        // Chuyển sang câu tiếp theo hoặc đánh giá kết quả
+        currentIndex++;
+        handleEndOfQuestion();
     }
 
-    private void finishQuiz() {
-        Toast.makeText(this, "Bạn đã hoàn thành quiz!", Toast.LENGTH_SHORT).show();
-        finish();
-    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        stopTimer(); // Đảm bảo timer được dừng khi activity bị hủy
+        stopTimer();
     }
 
-    // initQuestionsFileIfNeeded cần kiểm tra file tồn tại trước khi ghi đè
+    // initQuestionsFileIfNeeded giữ nguyên (đảm bảo có kiểm tra file.exists())
     private void initQuestionsFileIfNeeded() {
         File file = new File(getFilesDir(), "questions.json");
-
-        // ---> THÊM KIỂM TRA NÀY <---
         if (!file.exists()) {
             Log.d("QuizInit", "questions.json not found. Creating initial file.");
-            // Dữ liệu mẫu ban đầu
             List<Question> initialQuestions = new ArrayList<>();
+            // --- THÊM CÁC CÂU HỎI MẪU CỦA BẠN VÀO ĐÂY ---
+            initialQuestions.add(new Question("Math", "Algebra", "Easy", "Solve for x: 2x + 3 = 7", Arrays.asList("x = 1", "x = 2", "x = 3", "x = 4"), "x = 2"));
+            // ... (Thêm nhiều câu hỏi khác)
+            initialQuestions.add(new Question("English", "Reading", "Nightmare", "In Samuel Beckett's 'Waiting for Godot', who or what is 'Godot' commonly interpreted to represent?", Arrays.asList("A political figure", "Death", "God or salvation", "There is no definitive interpretation"), "There is no definitive interpretation"));
+            // --- KẾT THÚC PHẦN THÊM CÂU HỎI MẪU ---
 
-            // ... (TOÀN BỘ PHẦN TẠO initialQuestions của bạn giữ nguyên ở đây) ...
-            // MATH - ALGEBRA
-            initialQuestions.add(new Question("Math", "Algebra", "Easy", "Solve for x: 2x + 3 = 7",
-                    Arrays.asList("x = 1", "x = 2", "x = 3", "x = 4"), "x = 2"));
-            // ... Thêm các câu hỏi khác ...
-            initialQuestions.add(new Question("English", "Reading", "Nightmare", "In Samuel Beckett's 'Waiting for Godot', who or what is 'Godot' commonly interpreted to represent?",
-                    Arrays.asList("A political figure", "Death", "God or salvation", "There is no definitive interpretation"), "There is no definitive interpretation"));
-
-
-            // Ghi vào file
-            // Sử dụng GsonBuilder để định dạng JSON cho đẹp (tùy chọn)
             String jsonString = new GsonBuilder().setPrettyPrinting().create().toJson(initialQuestions);
             try (FileWriter writer = new FileWriter(file)) {
                 writer.write(jsonString);
-                Log.d("QuizInit", "questions.json created successfully in system directory.");
+                Log.d("QuizInit", "questions.json created successfully.");
             } catch (IOException e) {
                 Log.e("QuizInit", "Error writing initial questions.json", e);
             }
         } else {
-            Log.d("QuizInit", "questions.json already exists. Skipping creation.");
+            Log.d("QuizInit", "questions.json already exists.");
         }
     }
+
+    // --- Các hàm đọc/ghi lịch sử Quiz ---
+
+    // Hàm đọc lịch sử từ file JSON
+    private List<QuizAttempt> loadQuizHistory() {
+        File file = new File(getFilesDir(), QUIZ_HISTORY_FILENAME);
+        if (!file.exists()) {
+            return new ArrayList<>(); // Trả về list rỗng nếu file chưa tồn tại
+        }
+
+        StringBuilder sb = new StringBuilder();
+        try (FileInputStream fis = new FileInputStream(file);
+             InputStreamReader isr = new InputStreamReader(fis);
+             BufferedReader reader = new BufferedReader(isr)) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "Error reading quiz history file", e);
+            return new ArrayList<>(); // Trả về list rỗng nếu lỗi đọc
+        }
+
+        String jsonString = sb.toString();
+        if (jsonString.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        try {
+            Type historyListType = new TypeToken<ArrayList<QuizAttempt>>() {}.getType();
+            Gson gson = new Gson();
+            List<QuizAttempt> history = gson.fromJson(jsonString, historyListType);
+            return (history != null) ? history : new ArrayList<>(); // Đảm bảo không trả về null
+        } catch (Exception e) {
+            Log.e(TAG, "Error parsing quiz history JSON", e);
+            return new ArrayList<>(); // Trả về list rỗng nếu lỗi parse
+        }
+    }
+
+    // Hàm lưu lượt chơi hiện tại vào lịch sử (ghi đè toàn bộ file)
+    private void saveQuizAttemptToHistory(QuizAttempt attemptToSave) {
+        if (attemptToSave == null) return;
+
+        List<QuizAttempt> history = loadQuizHistory(); // Đọc lịch sử cũ
+        history.add(attemptToSave); // Thêm lượt chơi mới vào cuối
+
+        // Sắp xếp lịch sử theo thời gian bắt đầu (tùy chọn, mới nhất ở cuối)
+        // Collections.sort(history, (a1, a2) -> Long.compare(a1.attemptTimestampStart, a2.attemptTimestampStart));
+
+        Gson gson = new GsonBuilder().setPrettyPrinting().create(); // Dùng PrettyPrinting cho dễ đọc file
+        String jsonString = gson.toJson(history);
+
+        File file = new File(getFilesDir(), QUIZ_HISTORY_FILENAME);
+        try (FileOutputStream fos = new FileOutputStream(file); // Không dùng MODE_PRIVATE vì đây là file mới
+             OutputStreamWriter writer = new OutputStreamWriter(fos)) {
+            writer.write(jsonString);
+            Log.i(TAG, "Quiz history saved successfully to " + QUIZ_HISTORY_FILENAME);
+        } catch (IOException e) {
+            Log.e(TAG, "Error saving quiz history to file", e);
+        }
+    }
+    // --- Kết thúc hàm đọc/ghi lịch sử Quiz ---
 }
