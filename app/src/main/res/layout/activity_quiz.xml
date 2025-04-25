@@ -97,7 +97,7 @@
         android:id="@+id/resultTitleTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Kết quả Quiz"
+        android:text="@string/result"
         android:textSize="24sp"
         android:textStyle="bold"
         android:layout_marginBottom="16dp"/>
@@ -114,17 +114,16 @@
         android:id="@+id/dismissButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Tắt báo thức"
+        android:text="@string/turn_off_the_alarm"
         android:visibility="gone"
-    android:layout_marginBottom="8dp"/>
+        android:layout_marginBottom="8dp"/>
 
     <Button
         android:id="@+id/retryButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Thử lại Quiz"
-        android:visibility="gone"
-    style="@style/Widget.AppCompat.Button.Borderless.Colored"/>
+        android:text="@string/reply"
+        android:visibility="gone" />
 
 </LinearLayout>
 

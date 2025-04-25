@@ -76,6 +76,7 @@
             android:background="@drawable/rounded_box"
             android:padding="16dp"
             android:clickable="true"
+            android:layout_marginBottom="12dp"
             android:focusable="true"
             android:foreground="?android:attr/selectableItemBackground">
 
@@ -83,6 +84,36 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/data"
+                android:textColor="?attr/android:textColorPrimary"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"/>
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/baseline_arrow_forward_ios_24"
+                android:contentDescription="@string/description"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                app:tint="?attr/android:textColorPrimary" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layout_instruction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_box"
+            android:padding="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/instruction"
                 android:textColor="?attr/android:textColorPrimary"
                 android:textStyle="bold"
                 android:textSize="16sp"

@@ -21,7 +21,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
-import com.example.alarmclock.MainActivity; // Để mở lại app khi nhấn notification
+// import com.example.alarmclock.MainActivity; // Không cần nếu không dùng
 import com.example.alarmclock.R;
 
 import java.io.IOException;
@@ -37,7 +37,7 @@ public class AlarmRingService extends Service {
     private MediaPlayer mediaPlayer;
     private AudioManager audioManager;
     private Vibrator vibrator;
-    private int originalVolume;
+    private int originalVolume = -1; // Khởi tạo -1 để biết chưa lưu
     private boolean isVibrating = false; // Theo dõi trạng thái rung
     private int currentAlarmId = -1;
     private boolean isVolumeReduced = false;
@@ -50,43 +50,47 @@ public class AlarmRingService extends Service {
 
     @Override
     public void onCreate() {
-        super.onCreate();
+        // Không cần gọi super.onCreate() hai lần
         Log.d(TAG, "Service onCreate");
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         createNotificationChannel();
-
         Log.e("ALARM_DEBUG", "!!!!!!!!!! AlarmRingService onCreate !!!!!!!!!!");
-        super.onCreate();
+        // super.onCreate(); // <= XÓA DÒNG NÀY
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.e("ALARM_DEBUG", "!!!!!!!!!! AlarmRingService onStartCommand TOP !!!!!!!!!!");
-        Log.d(TAG, "Service onStartCommand - Full Intent: " + (intent != null ? intent.toString() + " Extras: " + intent.getExtras() : "null intent")); // Log cả extras
 
-        Log.d(TAG, "Service onStartCommand");
+        // Kiểm tra intent null ngay từ đầu
+        if (intent == null) {
+            Log.e(TAG, "onStartCommand called with a null intent. Stopping service.");
+            stopSelf(); // Dừng service nếu intent là null (thường xảy ra khi service bị khởi động lại bởi hệ thống với START_STICKY)
+            return START_NOT_STICKY; // Nên trả về START_NOT_STICKY
+        }
 
-        // Xử lý action dừng báo thức (từ notification hoặc Activity)
+        Log.d(TAG, "Service onStartCommand - Full Intent: " + intent.toString() + " Extras: " + intent.getExtras()); // Log cả extras
+
+        // Xử lý action dừng báo thức hoặc giảm âm lượng
         String action = intent.getAction();
         if (ACTION_STOP_ALARM.equals(action)) {
             Log.d(TAG, "Received stop action.");
             stopAlarmSound(true); // Dừng nhạc, rung, khôi phục âm lượng
-            stopForeground(true);
-            stopSelf();
+            stopForeground(true); // Gỡ bỏ foreground notification
+            stopSelf(); // Dừng service
             return START_NOT_STICKY;
-        }
-        // Xử lý action giảm âm lượng
-        else if (ACTION_REDUCE_VOLUME.equals(action)) {
+        } else if (ACTION_REDUCE_VOLUME.equals(action)) {
             Log.d(TAG, "Received reduce volume action.");
             reduceVolume();
-            stopVibration(); // Có thể muốn tắt rung khi bắt đầu quiz
-            // Không dừng service, chỉ giảm âm lượng
-            return START_STICKY; // Giữ service chạy
+            stopVibration(); // Tắt rung khi bắt đầu quiz
+            // Không dừng service, chỉ giảm âm lượng và tắt rung
+            return START_STICKY; // Giữ service chạy để có thể dừng sau khi quiz xong
         }
 
+        // Nếu không phải là action đặc biệt, xử lý như một lần khởi chạy báo thức mới
+
         // Lấy dữ liệu từ Intent được gửi bởi AlarmReceiver
-        Log.d("hehehehe", intent.getIntExtra("alarmId", -1) + intent.getStringExtra("subject"));
         currentAlarmId = intent.getIntExtra("alarmId", -1);
         int soundResourceId = intent.getIntExtra("soundResourceId", -1);
         String alarmNote = intent.getStringExtra("alarmNote");
@@ -94,19 +98,34 @@ public class AlarmRingService extends Service {
         String topic = intent.getStringExtra("topic");
         String difficulty = intent.getStringExtra("difficulty");
         int numQuestions = intent.getIntExtra("numQuestions", 5);
+        // !!! NHẬN THÊM CỜ deleteAfterAlarm !!!
+        boolean deleteAfterAlarm = intent.getBooleanExtra("deleteAfterAlarm", false);
 
-        if (alarmNote == null || alarmNote.isEmpty()) {
-            alarmNote = "Báo thức!"; // Ghi chú mặc định
-        }
-
-        Log.i(TAG, "Starting foreground service for alarmId: " + currentAlarmId);
+        // Log thông tin nhận được
+        Log.i(TAG, "Starting/Processing foreground service for alarmId: " + currentAlarmId);
         Log.d(TAG, "Sound resource ID: " + soundResourceId);
         Log.d(TAG, "Alarm note: " + alarmNote);
         Log.d(TAG, "Subject: " + subject);
+        Log.d(TAG, "Topic: " + topic);
+        Log.d(TAG, "Difficulty: " + difficulty);
+        Log.d(TAG, "NumQuestions: " + numQuestions);
+        Log.d(TAG, "DeleteAfterAlarm Flag: " + deleteAfterAlarm); // Log cờ mới
+
+        // Kiểm tra alarmId hợp lệ
+        if (currentAlarmId == -1) {
+            Log.e(TAG, "Invalid alarmId (-1) received. Stopping service.");
+            stopSelf();
+            return START_NOT_STICKY;
+        }
+
+        // Ghi chú mặc định
+        if (alarmNote == null || alarmNote.isEmpty()) {
+            alarmNote = getString(R.string.note_default); // Dùng string resource
+        }
 
         // Tạo và hiển thị notification foreground
         Log.d("ALARM_DEBUG", "Building notification...");
-        Notification notification = buildNotification(alarmNote, currentAlarmId);
+        Notification notification = buildNotification(alarmNote, currentAlarmId, subject, topic, difficulty, numQuestions, deleteAfterAlarm); // Truyền thêm dữ liệu
         if (notification == null) {
             Log.e("ALARM_DEBUG", "!!! buildNotification returned null! Stopping service.");
             stopSelf();
@@ -115,52 +134,72 @@ public class AlarmRingService extends Service {
         Log.d("ALARM_DEBUG", "Calling startForeground...");
         try {
             startForeground(NOTIFICATION_ID, notification);
-            Log.d("ALARM_DEBUG", "startForeground successful."); // Thêm log thành công
+            Log.d("ALARM_DEBUG", "startForeground successful.");
         } catch (Exception e) {
             Log.e("ALARM_DEBUG", "!!!!!!!!!! EXCEPTION during startForeground !!!!!!!!!!", e);
-            Toast.makeText(this, "Lỗi khi hiển thị thông báo báo thức.", Toast.LENGTH_LONG).show();
-            stopSelf(); // Dừng service nếu không thể chạy foreground
+            Toast.makeText(this, R.string.error, Toast.LENGTH_LONG).show(); // Dùng string resource
+            stopSelf();
             return START_NOT_STICKY;
         }
 
-        // Bắt đầu phát âm thanh và rung
-        Log.d("ALARM_DEBUG", "Calling startAlarmSound...");
-        startAlarmSound(soundResourceId);
-        Log.d("ALARM_DEBUG", "Calling startVibration...");
-        startVibration();
+        // Bắt đầu phát âm thanh và rung (chỉ khi chưa giảm âm lượng)
+        if (!isVolumeReduced) {
+            Log.d("ALARM_DEBUG", "Calling startAlarmSound...");
+            startAlarmSound(soundResourceId);
+            Log.d("ALARM_DEBUG", "Calling startVibration...");
+            startVibration();
+        } else {
+            Log.d("ALARM_DEBUG", "Volume already reduced, not restarting sound/vibration.");
+        }
 
-        // ----- THÊM ĐOẠN CODE NÀY ĐỂ KHỞI CHẠY ACTIVITY -----
+
+        // ----- KHỞI CHẠY ALARM RING ACTIVITY -----
+        // Logic này có thể cần xem xét lại. Có nên luôn khởi chạy Activity mỗi khi onStartCommand?
+        // Hay chỉ khởi chạy lần đầu? Hiện tại nó sẽ chạy mỗi lần onStartCommand (nếu không phải action đặc biệt).
+        // Nếu Activity đã mở, FLAG_ACTIVITY_SINGLE_TOP sẽ đưa nó lên trước thay vì tạo mới.
         Log.d("ALARM_DEBUG", "Attempting to explicitly start AlarmRingActivity...");
         Intent ringActivityIntent = new Intent(this, AlarmRingActivity.class);
-        // Quan trọng: Cần FLAG_ACTIVITY_NEW_TASK khi khởi chạy từ Service
-        // Các flag khác giúp quản lý Activity stack (tùy chọn nhưng thường hữu ích)
         ringActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         ringActivityIntent.putExtra("alarmId", currentAlarmId);
-        ringActivityIntent.putExtra("alarmNote", alarmNote); // Truyền dữ liệu cần thiết
+        ringActivityIntent.putExtra("alarmNote", alarmNote);
         ringActivityIntent.putExtra("subject", subject);
         ringActivityIntent.putExtra("topic", topic);
         ringActivityIntent.putExtra("difficulty", difficulty);
         ringActivityIntent.putExtra("numQuestions", numQuestions);
+        // !!! TRUYỀN TIẾP CỜ deleteAfterAlarm !!!
+        ringActivityIntent.putExtra("deleteAfterAlarm", deleteAfterAlarm);
 
-        Log.d(TAG, ringActivityIntent.getStringExtra("subject"));
+        try {
+            startActivity(ringActivityIntent);
+            Log.d(TAG, "Started AlarmRingActivity successfully.");
+        } catch (Exception e) {
+            Log.e(TAG, "Error starting AlarmRingActivity", e);
+            Toast.makeText(this, R.string.error, Toast.LENGTH_SHORT).show(); // Dùng string resource
+            // Cân nhắc dừng service nếu không mở được UI?
+            // stopSelf();
+            // return START_NOT_STICKY;
+        }
 
-        // START_STICKY: Nếu service bị kill, hệ thống sẽ cố gắng khởi động lại nhưng intent sẽ là null
-        // START_NOT_STICKY: Nếu service bị kill, nó sẽ không tự khởi động lại trừ khi có intent mới
-        // Thường dùng START_NOT_STICKY cho báo thức để tránh nó kêu lại không mong muốn
-        return START_NOT_STICKY;
+        return START_NOT_STICKY; // Báo thức không nên tự khởi động lại nếu bị kill
     }
 
+    // --- Hàm reduceVolume (Giữ nguyên) ---
     private void reduceVolume() {
         if (mediaPlayer != null && mediaPlayer.isPlaying() && audioManager != null && !isVolumeReduced) {
             try {
+                // Lưu âm lượng gốc nếu chưa lưu
                 if (originalVolume == -1) {
                     originalVolume = audioManager.getStreamVolume(AudioManager.STREAM_ALARM);
                 }
                 int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM);
-                int halfVolume = Math.max(1, maxVolume / 2);
-                audioManager.setStreamVolume(AudioManager.STREAM_ALARM, halfVolume, 0);
+                // Giảm âm lượng xuống mức thấp hơn (ví dụ 20% hoặc một giá trị cố định thấp)
+                int reducedVolume = Math.max(1, maxVolume / 5); // Ví dụ giảm còn 20%
+                // Hoặc có thể dùng mức cố định thấp, ví dụ 2 hoặc 3 tùy thuộc vào maxVolume
+                // int reducedVolume = Math.min(3, maxVolume); // Ví dụ: tối đa là 3
+
+                audioManager.setStreamVolume(AudioManager.STREAM_ALARM, reducedVolume, 0);
                 isVolumeReduced = true;
-                Log.d(TAG, "Reduced ALARM stream volume to: " + halfVolume);
+                Log.d(TAG, "Reduced ALARM stream volume to: " + reducedVolume);
             } catch (Exception e) {
                 Log.e(TAG, "Error reducing volume", e);
             }
@@ -169,53 +208,68 @@ public class AlarmRingService extends Service {
         }
     }
 
+
+    // --- Hàm startAlarmSound (Giữ nguyên, có thể tối ưu hóa) ---
     private void startAlarmSound(int soundResourceId) {
+        // Kiểm tra nếu đang chạy và chưa giảm âm lượng thì mới bắt đầu
         if (mediaPlayer != null && mediaPlayer.isPlaying()) {
             Log.w(TAG,"MediaPlayer is already playing.");
-            // Có thể bạn muốn dừng cái cũ trước khi bắt đầu cái mới nếu alarmId khác?
-            releaseMediaPlayer();
-            return;
+            // Không nên return ngay, vì có thể cần cập nhật âm lượng nếu chưa max
         }
+
+        // Nếu chưa có mediaPlayer hoặc đã release thì tạo mới
         if (mediaPlayer == null) {
             mediaPlayer = new MediaPlayer();
         } else {
-            mediaPlayer.reset(); // Đặt lại nếu đã tồn tại
+            // Nếu đang chạy nhưng âm lượng đã giảm thì không làm gì cả
+            if (mediaPlayer.isPlaying() && isVolumeReduced) {
+                Log.d(TAG, "MediaPlayer playing but volume reduced, not restarting.");
+                return;
+            }
+            mediaPlayer.reset(); // Reset nếu không chạy hoặc âm lượng chưa giảm
         }
+
 
         if (soundResourceId != -1 && soundResourceId != 0) {
             Log.i(TAG, "Attempting to play sound with resource ID: " + soundResourceId);
 
-            // --- Tối đa hóa âm lượng ---
-            if (audioManager != null) {
+            // Tối đa hóa âm lượng (chỉ nếu chưa giảm)
+            if (audioManager != null && !isVolumeReduced) {
                 try {
-                    originalVolume = audioManager.getStreamVolume(AudioManager.STREAM_ALARM);
+                    // Lưu âm lượng gốc nếu chưa lưu
+                    if (originalVolume == -1) {
+                        originalVolume = audioManager.getStreamVolume(AudioManager.STREAM_ALARM);
+                    }
                     int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM);
                     audioManager.setStreamVolume(AudioManager.STREAM_ALARM, maxVolume, 0);
                     Log.d(TAG, "Set ALARM stream volume to max: " + maxVolume);
                 } catch (Exception e) {
                     Log.e(TAG, "Error setting AudioManager volume", e);
                 }
-            } else {
+            } else if (audioManager == null) {
                 Log.e(TAG, "AudioManager is null.");
             }
 
-            // --- Khởi tạo MediaPlayer ---
+            // Khởi tạo MediaPlayer
             try {
                 AudioAttributes audioAttributes = new AudioAttributes.Builder()
                         .setUsage(AudioAttributes.USAGE_ALARM)
-                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC) // hoặc SONIFICATION
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                         .build();
                 mediaPlayer.setAudioAttributes(audioAttributes);
 
                 Uri soundUri = Uri.parse("android.resource://" + getPackageName() + "/" + soundResourceId);
                 mediaPlayer.setDataSource(this, soundUri);
                 mediaPlayer.setLooping(true);
-                mediaPlayer.prepareAsync();
+                mediaPlayer.prepareAsync(); // Chuẩn bị bất đồng bộ
 
                 mediaPlayer.setOnPreparedListener(mp -> {
                     Log.d(TAG, "MediaPlayer prepared. Starting playback.");
                     try {
-                        mp.start();
+                        // Chỉ start nếu service chưa bị yêu cầu dừng trong lúc prepare
+                        if (mediaPlayer != null) { // Kiểm tra lại mediaPlayer phòng trường hợp bị release
+                            mp.start();
+                        }
                     } catch (IllegalStateException e) {
                         Log.e(TAG, "IllegalStateException on MediaPlayer start after prepare", e);
                         stopAlarmSound(true); // Dừng nếu lỗi
@@ -224,34 +278,38 @@ public class AlarmRingService extends Service {
 
                 mediaPlayer.setOnErrorListener((mp, what, extra) -> {
                     Log.e(TAG, "MediaPlayer error: what=" + what + ", extra=" + extra);
-                    Toast.makeText(this, "Lỗi phát âm thanh báo thức", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.error, Toast.LENGTH_SHORT).show(); // Dùng string resource
                     stopAlarmSound(true); // Dừng nếu lỗi
                     return true; // Đã xử lý lỗi
                 });
 
             } catch (IOException | IllegalArgumentException | SecurityException | IllegalStateException e) {
                 Log.e(TAG, "Error setting data source or preparing MediaPlayer", e);
-                Toast.makeText(this, "Lỗi tải âm thanh báo thức", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.error, Toast.LENGTH_SHORT).show(); // Dùng string resource
                 releaseMediaPlayer();
             }
         } else {
             Log.e(TAG, "Invalid sound resource ID received: " + soundResourceId + ". Cannot play sound.");
-            Toast.makeText(this, "Âm thanh báo thức không hợp lệ", Toast.LENGTH_SHORT).show();
-            // Cân nhắc phát âm thanh mặc định của hệ thống ở đây
+            Toast.makeText(this, R.string.error, Toast.LENGTH_SHORT).show(); // Dùng string resource
+            // Cân nhắc phát âm thanh mặc định của hệ thống ở đây nếu muốn
         }
     }
 
+    // --- Hàm startVibration (Giữ nguyên) ---
     private void startVibration() {
+        // Chỉ rung nếu chưa giảm âm lượng (logic mới)
+        if (isVolumeReduced) {
+            Log.d(TAG,"Volume reduced, skipping vibration start.");
+            return;
+        }
         if (vibrator != null && vibrator.hasVibrator()) {
-            // Mẫu rung: đợi 0ms, rung 1000ms, đợi 1000ms, rung 1000ms... Lặp lại từ chỉ mục 0
             long[] pattern = {0, 1000, 1000};
-            int repeatIndex = 0; // Lặp lại toàn bộ mẫu
+            int repeatIndex = 0;
 
             try {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     vibrator.vibrate(VibrationEffect.createWaveform(pattern, repeatIndex));
                 } else {
-                    // deprecated in API 26
                     vibrator.vibrate(pattern, repeatIndex);
                 }
                 isVibrating = true;
@@ -267,39 +325,46 @@ public class AlarmRingService extends Service {
     }
 
 
+    // --- Hàm stopAlarmSound (Giữ nguyên) ---
     private void stopAlarmSound(boolean restoreVolume) {
         Log.i(TAG, "Stopping alarm sound. Restore volume: " + restoreVolume);
-        releaseMediaPlayer();
-        stopVibration();
+        releaseMediaPlayer(); // Dừng và giải phóng media player
+        stopVibration();      // Dừng rung
 
-        // Khôi phục âm lượng gốc CHỈ KHI được yêu cầu (ví dụ: khi tắt hoàn toàn)
+        // Khôi phục âm lượng gốc CHỈ KHI được yêu cầu
         if (restoreVolume && audioManager != null && originalVolume != -1) {
             try {
                 audioManager.setStreamVolume(AudioManager.STREAM_ALARM, originalVolume, 0);
                 Log.d(TAG, "Restored ALARM stream volume to: " + originalVolume);
-                originalVolume = -1; // Reset lại
-                isVolumeReduced = false; // Reset cờ
             } catch (Exception e) {
                 Log.e(TAG, "Error restoring volume", e);
+            } finally {
+                // Reset lại các trạng thái liên quan đến âm lượng/rung
+                originalVolume = -1;
+                isVolumeReduced = false;
             }
         } else if (!restoreVolume){
-            Log.d(TAG, "Volume not restored (likely entering quiz).");
+            Log.d(TAG, "Volume not restored (likely entering quiz or already restored).");
+            // Không cần reset isVolumeReduced ở đây vì nó sẽ được reset khi khôi phục thực sự
         }
     }
 
+    // --- Hàm stopVibration (Giữ nguyên) ---
     private void stopVibration() {
-        if (vibrator != null && isVibrating) {
+        if (vibrator != null && isVibrating) { // Chỉ cancel nếu đang rung
             try {
                 vibrator.cancel();
-                isVibrating = false;
                 Log.d(TAG, "Stopped vibration.");
             } catch (Exception e) {
                 Log.e(TAG, "Error stopping vibration", e);
+            } finally {
+                isVibrating = false; // Luôn đặt lại cờ sau khi cố gắng cancel
             }
         }
     }
 
 
+    // --- Hàm releaseMediaPlayer (Giữ nguyên) ---
     private void releaseMediaPlayer() {
         if (mediaPlayer != null) {
             Log.d(TAG,"Releasing MediaPlayer...");
@@ -307,35 +372,37 @@ public class AlarmRingService extends Service {
                 if (mediaPlayer.isPlaying()) {
                     mediaPlayer.stop();
                 }
-                mediaPlayer.reset();
-                mediaPlayer.release();
+                mediaPlayer.reset(); // Reset trạng thái trước khi release
+                mediaPlayer.release(); // Giải phóng tài nguyên
                 Log.d(TAG,"MediaPlayer released.");
-            } catch (Exception e) { // Catch broader exception for safety
+            } catch (Exception e) {
                 Log.e(TAG, "Exception while releasing MediaPlayer", e);
             } finally {
-                mediaPlayer = null;
+                mediaPlayer = null; // Đặt về null để có thể tạo mới lần sau
             }
         }
     }
 
+    // --- Hàm onDestroy (Giữ nguyên) ---
     @Override
     public void onDestroy() {
         Log.d(TAG, "Service onDestroy");
-        stopAlarmSound(true); // Đảm bảo mọi thứ dừng lại khi service bị hủy
+        stopAlarmSound(true); // Đảm bảo mọi thứ dừng và khôi phục khi service bị hủy
         super.onDestroy();
     }
 
+    // --- Hàm createNotificationChannel (Giữ nguyên) ---
     private void createNotificationChannel() {
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = getString(R.string.alarms); // Thêm chuỗi này vào strings.xml
             String description = getString(R.string.alarms); // Thêm chuỗi này vào strings.xml
             int importance = NotificationManager.IMPORTANCE_HIGH; // Quan trọng cao để hiển thị head-up
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);
-            // Tùy chọn: cấu hình thêm (rung, đèn, ...) cho kênh
             channel.enableVibration(false); // Tắt rung mặc định của kênh vì ta tự quản lý
-
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
+
             if (notificationManager != null) {
                 notificationManager.createNotificationChannel(channel);
                 Log.d(TAG,"Notification channel created.");
@@ -345,25 +412,30 @@ public class AlarmRingService extends Service {
         }
     }
 
-    private Notification buildNotification(String alarmNote, int alarmId) {
-        // --- Intent để mở AlarmRingActivity khi nhấn vào notification ---
+    // --- Hàm buildNotification (Cập nhật để truyền thêm dữ liệu) ---
+    private Notification buildNotification(String alarmNote, int alarmId, String subject, String topic, String difficulty, int numQuestions, boolean deleteAfterAlarm) {
+        // Intent để mở AlarmRingActivity khi nhấn vào notification
         Intent notificationIntent = new Intent(this, AlarmRingActivity.class);
-        // Đảm bảo Activity nhận được dữ liệu cần thiết
+        // Đưa TẤT CẢ dữ liệu cần thiết cho Activity vào Intent này
         notificationIntent.putExtra("alarmId", alarmId);
         notificationIntent.putExtra("alarmNote", alarmNote);
-        // Quan trọng: Thêm cờ để đảm bảo Activity được mở đúng cách từ nền
+        notificationIntent.putExtra("subject", subject);
+        notificationIntent.putExtra("topic", topic);
+        notificationIntent.putExtra("difficulty", difficulty);
+        notificationIntent.putExtra("numQuestions", numQuestions);
+        // !!! TRUYỀN CỜ deleteAfterAlarm VÀO INTENT NÀY !!!
+        notificationIntent.putExtra("deleteAfterAlarm", deleteAfterAlarm);
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-
-        // Request code nên duy nhất nếu bạn có nhiều loại pending intent hoặc nhiều báo thức cùng lúc có thể hiển thị
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, alarmId,
+        // PendingIntent để mở Activity
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, alarmId, // Dùng alarmId làm request code
                 notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-
-        // Intent cho hành động "Stop" (Giữ nguyên như trước)
+        // PendingIntent cho hành động "Stop"
         Intent stopIntent = new Intent(this, AlarmRingService.class);
         stopIntent.setAction(ACTION_STOP_ALARM);
-        PendingIntent stopPendingIntent = PendingIntent.getService(this, alarmId + 1000, // Request code khác
+        // Request code cần khác với PendingIntent mở Activity
+        PendingIntent stopPendingIntent = PendingIntent.getService(this, alarmId + 1000,
                 stopIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-
+        // Xây dựng Notification
         return new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("Báo thức đang kêu!")
                 .setContentText(alarmNote)
@@ -372,9 +444,7 @@ public class AlarmRingService extends Service {
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_ALARM)
                 .setOngoing(true)
-//                .addAction(R.drawable.ic_launcher_foreground, getString(R.string.ok), stopPendingIntent) // Nút dừng
                 .setAutoCancel(false) // Không tự hủy khi nhấn vào notification chính
-                // Cân nhắc thêm:
                 .setFullScreenIntent(pendingIntent, true) // Quan trọng: Cố gắng hiển thị Activity toàn màn hình ngay lập tức
                 .build();
     }

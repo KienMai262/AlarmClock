@@ -13,7 +13,11 @@
     <string name="language">Language</string>
     <string name="about">About</string>
     <string name="format">Format</string>
+    <string name="instruction">Instruction</string>
     <string name="quiz_history">Quiz History</string>
+    <string name="turn_off_the_alarm">Turn off the alarm</string>
+    <string name="reply">Reply</string>
+    <string name="result">Result</string>
 
     <string name="loop_option_one_time">One time</string>
     <string name="loop_option_daily">Daily</string>
@@ -127,4 +131,55 @@
 
     <string name="share_data_with_others">Share data with others</string>
 
+    <string name="user_guide_title">User Guide</string>
+    <string name="user_guide_content">
+        "Quiz Alarm Clock Application User Guide\n\n"
+        "1.🏠 Home Screen\n"
+        "When you open the app, you'll see the Bottom Navigation bar with 3 icons:\n"
+        "- 🕒 Home: List of set alarms\n"
+        "- ➕ Add Alarm: Create a new alarm\n"
+        "- 📊 History: View quiz answer history when dismissing alarms\n\n"
+        "2.🔧 Settings\n"
+        "In the settings screen, you can:\n"
+        "- 📤 Share Data: Export quiz or history data\n"
+        "- ♻️ Reset Data: Delete all application data\n"
+        "Theme and Language:\n"
+        "- Theme: Switch between Light / Dark interface\n"
+        "- Languages:\n"
+        "  · Vietnamese\n"
+        "  · English\n"
+        "  · Korean\n\n"
+        "3.➕ Create New Alarm\n"
+        "Press the ➕ button on the bottom bar to enter the Modify Alarm interface, including:\n"
+        "- ⏰ Time Picker: Select hour and minute\n"
+        "- 🔁 Loop: Choose alarm repetition: Once / Daily\n"
+        "- 🎵 Music: Select ringtone\n"
+        "- 📳 Vibration: Toggle vibration on/off for alarms\n"
+        "- 🗑️ Delete after: Automatically delete after the alarm rings\n"
+        "- 📝 Note: Add custom notes\n"
+        "- ❌ Delete Button: Delete this alarm\n\n"
+        "4.📚 Configure Quiz for Alarm\n"
+        "After pressing \"Next\" in the Modify Alarm interface, you can select the quiz content:\n"
+        "- Subject: Math / English\n"
+        "- Topic based on subject\n"
+        "- Difficulty: Easy, Medium, Hard, Nightmare\n"
+        "- Number of questions: Optional\n\n"
+        "5.🔔 When the Alarm Rings\n"
+        "- A notification will appear in the status bar.\n"
+        "- Tap the notification → navigate to the quiz solving interface.\n"
+        "- \"Do Quiz Now\" button to confirm solving the puzzle to turn off the alarm\n\n"
+        "6.❓ Quiz Interface When Alarm Rings\n"
+        "- Displays the question and 4 choices A/B/C/D.\n"
+        "- \"Do Quiz Now\" button to confirm completion.\n"
+        "Rules:\n"
+        "- ✅ If you answer at least 50% question correctly → Alarm can be turned off.\n"
+        "- ❌ If all answers are wrong → Must retake the quiz from the beginning!\n\n"
+        "7.📊 Quiz Answer History Interface\n"
+        "- View history of attempts, results with answers.\n\n"
+        "Conclusion:\n"
+        "The application helps you:\n"
+        "- Wake up on time\n"
+        "- Stay alert by exercising your brain\n"
+        "- Learn and train your morning reflexes!"
+    </string>
 </resources>

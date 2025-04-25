@@ -32,6 +32,7 @@ public class SettingDataFragment extends Fragment {
     private SharedPreferences prefs;
     private static final String PREFS_NAME = "Settings";
     private static final String ALARM_DATA_FILENAME = "alarm_data.json";
+    private static final String QUIZ_HISTORY_FILENAME = "quiz_history.json";
 
     @Nullable
     @Override
@@ -94,21 +95,23 @@ public class SettingDataFragment extends Fragment {
                     performDeleteData();
                 })
                 .setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
-                .setIcon(android.R.drawable.ic_dialog_alert) // Icon cảnh báo
+                .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
     }
 
     private void performDeleteData() {
         boolean settingsCleared = prefs.edit().clear().commit();
         boolean fileDeleted = requireContext().deleteFile(ALARM_DATA_FILENAME);
+        boolean historyFileDeleted = requireContext().deleteFile(QUIZ_HISTORY_FILENAME);
 
-        if (settingsCleared && fileDeleted) {
-            Toast.makeText(requireContext(), R.string.data_deleted_success, Toast.LENGTH_SHORT).show(); // Thêm string
-        } else if (settingsCleared) {
-            // File có thể không tồn tại sẵn
-            Toast.makeText(requireContext(), R.string.settings_deleted_file_not_found, Toast.LENGTH_SHORT).show(); // Thêm string
+        if (settingsCleared) {
+            Toast.makeText(requireContext(), R.string.data_deleted_success, Toast.LENGTH_SHORT).show();
+
+            Log.d("SettingDataFragment", "Settings cleared: " + settingsCleared +
+                    ", Alarm file deleted: " + fileDeleted +
+                    ", History file deleted: " + historyFileDeleted);
         } else {
-            Toast.makeText(requireContext(), R.string.error_deleting_data, Toast.LENGTH_SHORT).show(); // Thêm string
+            Toast.makeText(requireContext(), R.string.error, Toast.LENGTH_SHORT).show(); // Cần tạo string resource này
         }
 
         NavHostFragment.findNavController(this).popBackStack();

@@ -51,6 +51,11 @@
         tools:layout="@layout/fragment_setting_data" />
 
     <fragment
+        android:id="@+id/navigation_setting_instruction"
+        android:name="com.example.alarmclock.ui.setting.UserGuideFragment"
+        tools:layout="@layout/fragment_user_guide" />
+
+    <fragment
         android:id="@+id/navigation_share_data"
         android:name="com.example.alarmclock.ui.share.DataShareFragment"
         tools:layout="@layout/fragment_share_data" />

@@ -14,6 +14,12 @@
     <string name="language">Ngôn ngữ</string>
     <string name="about">Giới thiệu</string>
     <string name="format">Định dạng</string>
+    <string name="instruction">Hướng dẫn</string>
+    <string name="quiz_history">Lịch sử câu đố</string>
+    <string name="turn_off_the_alarm">Tắt báo thức</string>
+    <string name="reply">Trả lời lại</string>
+    <string name="result">Kết quả</string>
+
 
     <string name="loop_option_one_time">Một lần</string>
     <string name="loop_option_daily">Hằng ngày</string>
@@ -124,4 +130,57 @@
     <string name="clipboard_error">Lỗi clipboard</string>
 
     <string name="share_data_with_others">Chia sẻ dữ liệu với người khác</string>
+
+
+    <string name="user_guide_title">Hướng Dẫn Sử Dụng</string>
+    <string name="user_guide_content">
+        "Hướng Dẫn Sử Dụng Ứng Dụng Báo Thức Quiz\n\n"
+        "1.🏠 Màn Hình Chính (Home)\n"
+        "Khi mở ứng dụng, bạn sẽ thấy thanh điều hướng dưới cùng (Bottom Navigation) với 3 biểu tượng:\n"
+        "- 🕒 Home: Danh sách báo thức đã đặt\n"
+        "- ➕ Thêm báo thức: Tạo báo thức mới\n"
+        "- 📊 Lịch sử: Xem lịch sử trả lời quiz khi tắt báo thức\n\n"
+        "2.🔧 Cài Đặt (Settings)\n"
+        "Tại màn hình cài đặt, bạn có thể:\n"
+        "- 📤 Share Data: Xuất dữ liệu quiz hoặc lịch sử\n"
+        "- ♻️ Reset Data: Xoá toàn bộ dữ liệu ứng dụng\n"
+        "Theme và Ngôn Ngữ:\n"
+        "- Theme: Chuyển giữa Giao diện Sáng / Tối\n"
+        "- Languages:\n"
+        "  · Tiếng Việt\n"
+        "  · Tiếng Anh\n"
+        "  · Tiếng Hàn\n\n"
+        "3.➕ Tạo Báo Thức Mới\n"
+        "Khi bấm nút ➕ ở thanh dưới cùng, bạn sẽ vào giao diện Modify Alarm, gồm:\n"
+        "- ⏰ Time Picker: Chọn giờ và phút\n"
+        "- 🔁 Loop: Chọn lặp báo thức: Một lần / Hàng ngày\n"
+        "- 🎵 Music: Chọn nhạc chuông\n"
+        "- 📳 Vibration: Bật tắt rung khi báo thức\n"
+        "- 🗑️ Delete after: Tự xoá sau khi báo thức kêu\n"
+        "- 📝 Note: Ghi chú tùy ý\n"
+        "- ❌ Nút Delete: Xoá báo thức này\n\n"
+        "4.📚 Cấu Hình Quiz Cho Báo Thức\n"
+        "Sau khi bấm \"Next\" trong giao diện Modify Alarm, bạn sẽ được chọn nội dung quiz:\n"
+        "- Môn học: Toán học / Tiếng Anh\n"
+        "- Chủ đề theo môn học\n"
+        "- Độ khó: Easy, Medium, Hard, Nightmare\n"
+        "- Số câu: Tuỳ chọn\n\n"
+        "5.🔔 Khi Báo Thức Rung\n"
+        "- Sẽ hiện một thông báo (Notification) trên thanh trạng thái.\n"
+        "- Bấm vào thông báo → chuyển đến giao diện giải quiz.\n"
+        "- Nút “Do Quiz Now” để xác nhận giải đố nhằm tắt báo thức\n\n"
+        "6.❓ Giao Diện Làm Quiz Khi Báo Thức Kêu\n"
+        "- Hiển thị câu hỏi và 4 lựa chọn A/B/C/D.\n"
+        "- Nút “Do Quiz Now” để xác nhận hoàn thành.\n"
+        "Quy tắc:\n"
+        "- ✅ Nếu bạn trả lời đúng ít nhất 50% câu → Tắt được báo thức.\n"
+        "- ❌ Nếu sai hết → Phải làm lại quiz từ đầu!\n\n"
+        "7.📊 Giao diện lịch sử trả lời quiz\n"
+        "- Xem được lịch sử làm bài, kết quả kèm đáp án.\n\n"
+        "Kết luận:\n"
+        "Ứng dụng giúp bạn:\n"
+        "- Thức dậy đúng giờ\n"
+        "- Tỉnh táo bằng cách vận động trí não\n"
+        "- Vừa học, vừa rèn luyện phản xạ buổi sáng!"
+    </string>
 </resources>

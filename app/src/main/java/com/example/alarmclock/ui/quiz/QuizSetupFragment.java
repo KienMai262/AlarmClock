@@ -1,6 +1,7 @@
 package com.example.alarmclock.ui.quiz;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,11 +27,12 @@ import java.util.Map;
 
 public class QuizSetupFragment extends Fragment {
 
-    private final Map<String, List<String>> topicMap = new HashMap<String, List<String>>();
-//    {{
-//        put("English", Arrays.asList("Vocabulary", "Grammar", "Reading"));
-//        put("Math", Arrays.asList("Algebra", "Geometry", "Calculus"));
-//    }};
+    private final List<String> subjectKeys = Arrays.asList("English", "Math");
+    private final Map<String, List<String>> topicKeysMap = new HashMap<>();
+    private final List<String> difficultyKeys = Arrays.asList("Easy", "Medium", "Hard", "Nightmare");
+
+    private final Map<String, Integer> keyToDisplayResIdMap = new HashMap<>();
+
     private AlarmData currentEditingAlarmData;
     private int currentAlarmIndex;
     private Spinner spinnerSubject, spinnerTopic, spinnerDifficulty;
@@ -61,14 +63,23 @@ public class QuizSetupFragment extends Fragment {
             navController.popBackStack();
         });
 
-        setupTopicMap(); // Đưa dữ liệu vào topicMap dựa trên ngôn ngữ
+        setupKeysAndMappings();
         setupSubjectSpinner();
         setupDifficultySpinner();
 
+
         btnConfirm.setOnClickListener(v -> {
-            String subject = spinnerSubject.getSelectedItem().toString();
-            String topic = spinnerTopic.getSelectedItem().toString();
-            String difficulty = spinnerDifficulty.getSelectedItem().toString();
+            int subjectPosition = spinnerSubject.getSelectedItemPosition();
+            int topicPosition = spinnerTopic.getSelectedItemPosition();
+            int difficultyPosition = spinnerDifficulty.getSelectedItemPosition();
+
+            String subjectKey = subjectKeys.get(subjectPosition);
+            List<String> currentTopicKeys = topicKeysMap.get(subjectKey);
+            if (currentTopicKeys == null) currentTopicKeys = new ArrayList<>(); // Đảm bảo không null
+            String topicKey = (topicPosition >= 0 && topicPosition < currentTopicKeys.size()) ? currentTopicKeys.get(topicPosition) : ""; // Lấy khóa topic
+
+            String difficultyKey = difficultyKeys.get(difficultyPosition);
+
             String numQuestionsStr = editTextNumQuestions.getText().toString().trim();
 
             if (numQuestionsStr.isEmpty()) {
@@ -76,22 +87,19 @@ public class QuizSetupFragment extends Fragment {
                 return;
             }
 
-            int numQuestions = Integer.parseInt(numQuestionsStr);
+            int numQuestions = Integer.parseInt(numQuestionsStr); // Hoặc xử lý lỗi nếu cần
 
-            // Gắn các thông tin quiz vào AlarmData
-            currentEditingAlarmData.subject = subject;
-            currentEditingAlarmData.topic = topic;
-            currentEditingAlarmData.difficulty = difficulty;
+            currentEditingAlarmData.subject = subjectKey;
+            currentEditingAlarmData.topic = topicKey;
+            currentEditingAlarmData.difficulty = difficultyKey;
             currentEditingAlarmData.numQuestions = numQuestions;
 
-            // Chuyển đến màn hình tiếp theo (ví dụ như QuizPreviewFragment)
             Bundle result = new Bundle();
             result.putSerializable("alarmData", currentEditingAlarmData);
             result.putInt("alarmIndex", currentAlarmIndex);
 
             getParentFragmentManager().setFragmentResult("quizSetupResult", result);
 
-            // Quay về fragment trước (CreateAlarmFragment)
             NavController navController = NavHostFragment.findNavController(this);
             navController.popBackStack();  // Quay lại màn trước
 
@@ -99,62 +107,106 @@ public class QuizSetupFragment extends Fragment {
 
         return view;
     }
-    //bổ sung setupTopicmap
-    private void setupTopicMap() {
-        topicMap.put(getString(R.string.subject_english),
-                Arrays.asList(
-                        getString(R.string.topic_vocabulary),
-                        getString(R.string.topic_grammar),
-                        getString(R.string.topic_reading)
-                ));
 
-        topicMap.put(getString(R.string.subject_math),
-                Arrays.asList(
-                        getString(R.string.topic_algebra),
-                        getString(R.string.topic_geometry),
-                        getString(R.string.topic_calculus)
-                ));
+    private void setupKeysAndMappings() {
+        keyToDisplayResIdMap.put("English", R.string.subject_english);
+        keyToDisplayResIdMap.put("Math", R.string.subject_math);
+
+        keyToDisplayResIdMap.put("Vocabulary", R.string.topic_vocabulary);
+        keyToDisplayResIdMap.put("Grammar", R.string.topic_grammar);
+        keyToDisplayResIdMap.put("Reading", R.string.topic_reading);
+
+        keyToDisplayResIdMap.put("Algebra", R.string.topic_algebra);
+        keyToDisplayResIdMap.put("Geometry", R.string.topic_geometry);
+        keyToDisplayResIdMap.put("Calculus", R.string.topic_calculus);
+
+        keyToDisplayResIdMap.put("Easy", R.string.difficulty_easy);
+        keyToDisplayResIdMap.put("Medium", R.string.difficulty_medium);
+        keyToDisplayResIdMap.put("Hard", R.string.difficulty_hard);
+        keyToDisplayResIdMap.put("Nightmare", R.string.difficulty_nightmare);
+
+        topicKeysMap.put("English", Arrays.asList("Vocabulary", "Grammar", "Reading"));
+        topicKeysMap.put("Math", Arrays.asList("Algebra", "Geometry", "Calculus"));
     }
 
     private void setupSubjectSpinner() {
-        List<String> subjects = new ArrayList<>(topicMap.keySet());
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, subjects);
+        List<String> displaySubjects = new ArrayList<>();
+        if (subjectKeys != null && keyToDisplayResIdMap != null) {
+            for (String key : subjectKeys) {
+                Integer resId = keyToDisplayResIdMap.get(key); // Lấy giá trị kiểu Integer
+
+                if (resId != null) { // *** KIỂM TRA NULL ***
+                    displaySubjects.add(getString(resId)); // Chỉ gọi getString khi resId không null
+                } else {
+                    Log.w("QuizSetup", "Không tìm thấy Resource ID cho subject key: " + key);
+                    displaySubjects.add(key + " (Lỗi)"); // Hoặc chỉ hiển thị key
+                }
+            }
+        } else {
+            Log.e("QuizSetup", "Lỗi: subjectKeys hoặc keyToDisplayResIdMap bị null!");
+        }
+
+        // --- Phần còn lại của việc tạo và set Adapter ---
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, displaySubjects);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerSubject.setAdapter(adapter);
 
+        // --- Listener ---
         spinnerSubject.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
-                String selectedSubject = subjects.get(position);
-                updateTopicSpinner(selectedSubject);
+                // Cẩn thận: Nếu displaySubjects có chứa chuỗi lỗi, việc lấy key bằng position có thể sai
+                // Đảm bảo logic lấy key bằng position vẫn đúng hoặc điều chỉnh lại
+                if (position >= 0 && position < subjectKeys.size()){ // Kiểm tra giới hạn an toàn
+                    String selectedSubjectKey = subjectKeys.get(position);
+                    updateTopicSpinner(selectedSubjectKey);
+                } else {
+                    Log.e("QuizSetup", "Vị trí không hợp lệ trong subject spinner: " + position);
+                }
             }
 
             @Override
-            public void onNothingSelected(android.widget.AdapterView<?> parent) {
-            }
+            public void onNothingSelected(android.widget.AdapterView<?> parent) { }
         });
 
         // Mặc định chọn đầu tiên
-        if (!subjects.isEmpty()) updateTopicSpinner(subjects.get(0));
+        if (!subjectKeys.isEmpty() && !displaySubjects.isEmpty()) { // Kiểm tra cả subjectKeys không rỗng
+            updateTopicSpinner(subjectKeys.get(0));
+        }
     }
 
-    private void updateTopicSpinner(String subject) {
-        List<String> topics = topicMap.get(subject);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, topics);
+    private void updateTopicSpinner(String subjectKey) { // Nhận khóa tiếng Anh
+        List<String> currentTopicKeys = topicKeysMap.get(subjectKey);
+        if (currentTopicKeys == null) currentTopicKeys = new ArrayList<>(); // Đề phòng lỗi
+
+        // Tạo danh sách chuỗi hiển thị topic theo ngôn ngữ
+        List<String> displayTopics = new ArrayList<>();
+        for (String key : currentTopicKeys) {
+            displayTopics.add(getString(keyToDisplayResIdMap.get(key)));
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, displayTopics);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerTopic.setAdapter(adapter);
     }
 
     private void setupDifficultySpinner() {
-//        List<String> difficulties = Arrays.asList("Easy", "Medium", "Hard", "Nightmare");
-        List<String> difficulties = Arrays.asList(
-                getString(R.string.difficulty_easy),
-                getString(R.string.difficulty_medium),
-                getString(R.string.difficulty_hard),
-                getString(R.string.difficulty_nightmare)
+        List<String> displayDifficulties = new ArrayList<>();
+        for (String key : difficultyKeys) {
+            Integer displayStringResId = keyToDisplayResIdMap.get(key);if (displayStringResId != null) {
+                displayDifficulties.add(getString(displayStringResId));
+            } else {
+                displayDifficulties.add(key);
+            }
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                requireContext(),
+                android.R.layout.simple_spinner_item,
+                displayDifficulties
         );
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, difficulties);
+
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
         spinnerDifficulty.setAdapter(adapter);
     }
 

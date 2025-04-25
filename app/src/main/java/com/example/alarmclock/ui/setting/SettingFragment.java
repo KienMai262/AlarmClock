@@ -44,6 +44,13 @@ public class SettingFragment extends Fragment {
             NavController navController = NavHostFragment.findNavController(this);
             navController.navigate(R.id.navigation_setting_data);
         });
+
+        RelativeLayout instruction = binding.layoutInstruction;
+        instruction.setOnClickListener(v -> {
+            NavController navController = NavHostFragment.findNavController(this);
+            navController.navigate(R.id.navigation_setting_instruction);
+        });
+
         return root;
     }
 }
